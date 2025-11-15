@@ -21,56 +21,109 @@
 # TBD: 1. automatizacia cesty k folderu
 
 from rembg import remove
-from PIL import Image
+from PIL import Image, ImageTk, ExifTags                         #Náhľad obrázka v Tkinter
 import io
-from tkinter import *
 import os
+import tkinter as tk
+from tkinter import filedialog, messagebox
 
-version = 0.1
+VERSION = "0.2"
 
-#GUI
-window = Tk()
-window.title(f"Remove Background v.{version}")
-window.resizable(False,False)
+class BackgroundRemoveApp(tk.Tk):
+    def __init__(self):
+        super().__init__()
+        #GUI
+        self.title(f"Remove Background v.{VERSION}")
+        self.resizable(False, False)
+        self.set_window_geometry(800, 800)
 
-window_width = 500
-window_height = 800
+        # Zistenie absolútnej cesty k priečinku, v ktorom sa nachádza skript
+        self.script_dir = os.path.dirname(os.path.abspath(__file__))
+
+        # Výstupný súbor sa uloží do podpriečinka "output"
+        self.output_path = os.path.join(self.script_dir, "output", "obrazok_remBG.png")
+
+        self.create_widgets()
+
+    #Metody:
+        # Open app in the center of the screen         
+    def set_window_geometry(self, width, height):
+        # Obtain Screen resolution
+        screen_width = self.winfo_screenwidth()
+        screen_height = self.winfo_screenheight()
+
+         # Position calculation of the window
+        x = (screen_width // 2) - (width // 2)
+        y = (screen_height // 2) - (height // 2)
+
+        # Set position of the window to center 
+        self.geometry(f"{width}x{height}+{x}+{y}")
+
+    def create_widgets(self):
+                
+        # Tlačidlo na výber obrázku
+        tk.Button(self, text="Vyber obrázok na odstránenie pozadia:", command=self.load_image).pack(pady=10)
+
+        # tk.Button(self, text="testovacie").pack(side=tk.LEFT, padx=25, pady=5)        #skusobne tlacitko
+        
+        # Rámček na náhľady obrázkov
+        preview_frame = tk.Frame(self)
+        preview_frame.pack(pady=10)
+
+        # Pôvodný obrázok
+        self.original_label = tk.Label(preview_frame)
+        self.original_label.pack(side=tk.LEFT, padx=10)
+
+        # Upravený obrázok
+        self.processed_label = tk.Label(preview_frame)
+        self.processed_label.pack(side=tk.RIGHT, padx=10)
+
+        # Tlačidlo na ukončenie aplikácie
+        tk.Button(self, text="Ukončiť", command=self.quit).pack(side=tk.BOTTOM, pady=20)
+
+
+
+    def load_image(self):
+        file_path = filedialog.askopenfilename(filetypes=[("Obrázky", "*.png *.jpg *.jpeg")])
+        if not file_path:
+            return
+        try:
+            # Zobraz pôvodný obrázok
+            self.show_preview(file_path, self.original_label)
+
+            # Načítanie a spracovanie
+            with open(file_path, "rb") as input_file:
+                input_data = input_file.read()
+
+            output_data = remove(input_data)
+
+            os.makedirs(os.path.dirname(self.output_path), exist_ok=True)
+
+            with open(self.output_path, "wb") as output_file:
+                output_file.write(output_data)
+
+            # Zobraz upravený obrázok
+            self.show_preview(self.output_path, self.processed_label)
+
+            messagebox.showinfo("Hotovo", f"Pozadie odstránené!\nUložené do:\n{self.output_path}")
+        except Exception as e:
+            messagebox.showerror("Chyba", f"Nepodarilo sa spracovať obrázok:\n{e}")
+
+
     
-    # Open app in the center of the screen 
-        # Obrain Screen resolution
-screen_width = window.winfo_screenwidth()
-screen_height = window.winfo_screenheight()
+    def show_preview(self, file_path, target_label):
+        image = Image.open(file_path)
+        image.thumbnail((300, 300))  # prispôsobenie veľkosti
+        tk_image = ImageTk.PhotoImage(image)
 
-    # Position calculation of the window
-x = (screen_width // 2) - (window_width // 2)
-y = (screen_height // 2) - (window_height // 2)
-    # Set position of the window to center 
-window.geometry(f"{window_width}x{window_height}+{x}+{y}")
+    # Uloženie referencie, aby sa obrázok nezmizol
+        target_label.image = tk_image
+        target_label.config(image=tk_image)
 
 
-# OS - adresar urcenie + Ikona Dynamicky zisti cestu k súboru
-script_dir = os.path.dirname(os.path.abspath(__file__))       #zistenie absolútnej cesty k priečinku, v ktorom sa nachádza sputený Python skript
-
-output_dir = os.path.join(script_dir, "output\obrazok_remBG.png")              #momentalne vystupny subor ulozi do adresara kde je skript
-
-# icon_path = os.path.join(script_dir, "Remote-Background.ico")     #vytvorí kompletnú cestu k súboru s ikonou, ktorý sa nachádza v rovnakom priečinku ako skript
-
-
-# Load image
-with open(r"c:\py\my_projects\Remove-Background\input\20250816_151440.jpg", "rb") as input_file:           #TBD zautomatizovat cez os aby vzdy nahodilo cestu
-    input_data = input_file.read()
-
-# Remove Background
-output_data = remove(input_data)
-
-# Save image
-with open(output_dir, "wb") as output_file:         #TBD zautomatizovat cez os aby vzdy nahodilo cestu - 1.do folderu "output", 2.popripade dat moznost kde sa ma ulozit
-    output_file.write(output_data)
-
-
-
-window.mainloop()
-
+if __name__ == "__main__":
+    app = BackgroundRemoveApp()
+    app.mainloop()
 
 
 #dalsie pouzitie kniznice PIL:

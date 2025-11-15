@@ -48,24 +48,23 @@ y = (screen_height // 2) - (window_height // 2)
 window.geometry(f"{window_width}x{window_height}+{x}+{y}")
 
 
-
 # OS - adresar urcenie + Ikona Dynamicky zisti cestu k súboru
 script_dir = os.path.dirname(os.path.abspath(__file__))       #zistenie absolútnej cesty k priečinku, v ktorom sa nachádza sputený Python skript
 
-output_dir = os.path.join(script_dir, "obrazok_remBG.png")              #momentalne vystupny subor ulozi do adresara kde je skript
+output_dir = os.path.join(script_dir, "output\obrazok_remBG.png")              #momentalne vystupny subor ulozi do adresara kde je skript
 
 # icon_path = os.path.join(script_dir, "Remote-Background.ico")     #vytvorí kompletnú cestu k súboru s ikonou, ktorý sa nachádza v rovnakom priečinku ako skript
 
 
-# Načítaj obrázok
-with open(r"c:\py\my_projects\Remove-Background\20250816_151440.jpg", "rb") as input_file:           #TBD zautomatizovat cez os aby vzdy nahodilo cestu
+# Load image
+with open(r"c:\py\my_projects\Remove-Background\input\20250816_151440.jpg", "rb") as input_file:           #TBD zautomatizovat cez os aby vzdy nahodilo cestu
     input_data = input_file.read()
 
-# Odstráň pozadie
+# Remove Background
 output_data = remove(input_data)
 
-# Ulož výsledok
-with open(output_dir, "wb") as output_file:         #TBD zautomatizovat cez os aby vzdy nahodilo cestu - 1.tam kde je script, 2.popripade dat moznost kde sa ma ulozit
+# Save image
+with open(output_dir, "wb") as output_file:         #TBD zautomatizovat cez os aby vzdy nahodilo cestu - 1.do folderu "output", 2.popripade dat moznost kde sa ma ulozit
     output_file.write(output_data)
 
 

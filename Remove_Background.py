@@ -35,7 +35,7 @@ class BackgroundRemoveApp(tk.Tk):
         #GUI
         self.title(f"Remove Background v.{VERSION}")
         self.resizable(False, False)
-        self.set_window_geometry(800, 800)
+        self.set_window_geometry(800, 400)
 
         # Zistenie absolútnej cesty k priečinku, v ktorom sa nachádza skript
         self.script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -59,28 +59,26 @@ class BackgroundRemoveApp(tk.Tk):
         # Set position of the window to center 
         self.geometry(f"{width}x{height}+{x}+{y}")
 
-    def create_widgets(self):
-                
+    def create_widgets(self):   
         # Tlačidlo na výber obrázku
         tk.Button(self, text="Vyber obrázok na odstránenie pozadia:", command=self.load_image).pack(pady=10)
 
         # tk.Button(self, text="testovacie").pack(side=tk.LEFT, padx=25, pady=5)        #skusobne tlacitko
         
-        # Rámček na náhľady obrázkov
+        # Frame - Rámček na náhľady obrázkov
         preview_frame = tk.Frame(self)
         preview_frame.pack(pady=10)
 
-        # Pôvodný obrázok
+        # Label - Pôvodný obrázok
         self.original_label = tk.Label(preview_frame)
         self.original_label.pack(side=tk.LEFT, padx=10)
 
-        # Upravený obrázok
+        # Label - Upravený obrázok
         self.processed_label = tk.Label(preview_frame)
         self.processed_label.pack(side=tk.RIGHT, padx=10)
 
         # Tlačidlo na ukončenie aplikácie
-        tk.Button(self, text="Ukončiť", command=self.quit).pack(side=tk.BOTTOM, pady=20)
-
+        # tk.Button(self, text="Ukončiť", command=self.quit).pack(side=tk.BOTTOM, pady=20)
 
 
     def load_image(self):
@@ -110,15 +108,36 @@ class BackgroundRemoveApp(tk.Tk):
             messagebox.showerror("Chyba", f"Nepodarilo sa spracovať obrázok:\n{e}")
 
 
-    
+        #Zobrazenie obrazka v okne
     def show_preview(self, file_path, target_label):
         image = Image.open(file_path)
-        image.thumbnail((300, 300))  # prispôsobenie veľkosti
-        tk_image = ImageTk.PhotoImage(image)
 
-    # Uloženie referencie, aby sa obrázok nezmizol
+        # Korekcia orientácie podľa EXIF
+        try:
+            for orientation in ExifTags.TAGS.keys():
+                if ExifTags.TAGS[orientation] == 'Orientation':
+                    break
+            exif = image._getexif()
+            if exif is not None:
+                orientation_value = exif.get(orientation)
+                if orientation_value == 3:
+                    image = image.rotate(180, expand=True)
+                elif orientation_value == 6:
+                    image = image.rotate(270, expand=True)
+                elif orientation_value == 8:
+                    image = image.rotate(90, expand=True)
+        except Exception as e:
+            print("EXIF orientácia sa nepodarila načítať:", e)
+
+        # Zmenšenie obrázka
+        image.thumbnail((300, 300))
+
+        # Konverzia pre Tkinter -Uloženie referencie, aby sa obrázok nezmizol
+        tk_image = ImageTk.PhotoImage(image)
         target_label.image = tk_image
         target_label.config(image=tk_image)
+
+
 
 
 if __name__ == "__main__":

@@ -26,14 +26,35 @@ import io
 from tkinter import *
 import os
 
+version = 0.1
+
+#GUI
+window = Tk()
+window.title(f"Remove Background {version}")
+window.resizable(False,False)
+
+window_width = 500
+window_height = 800
+    
+    # Open app in the center of the screen 
+        # Obrain Screen resolution
+screen_width = window.winfo_screenwidth()
+screen_height = window.winfo_screenheight()
+
+    # Position calculation of the window
+x = (screen_width // 2) - (window_width // 2)
+y = (screen_height // 2) - (window_height // 2)
+    # Set position of the window to center 
+window.geometry(f"{window_width}x{window_height}+{x}+{y}")
+
+
 
 # OS - adresar urcenie + Ikona Dynamicky zisti cestu k súboru
-script_dir = os.path.dirname(os.path.abspath(__file__))       #zistenie absolútnej cesty k priečinku, v ktorom sa nachádza spsutený Python skript
+script_dir = os.path.dirname(os.path.abspath(__file__))       #zistenie absolútnej cesty k priečinku, v ktorom sa nachádza sputený Python skript
 
 output_dir = os.path.join(script_dir, "obrazok_remBG.png")              #momentalne vystupny subor ulozi do adresara kde je skript
 
 # icon_path = os.path.join(script_dir, "Flat-Money.ico")     #vytvorí kompletnú cestu k súboru s ikonou, ktorý sa nachádza v rovnakom priečinku ako skript
-
 
 
 # Načítaj obrázok
@@ -49,6 +70,7 @@ with open(output_dir, "wb") as output_file:         #TBD zautomatizovat cez os a
 
 
 
+window.mainloop()
 
 
 

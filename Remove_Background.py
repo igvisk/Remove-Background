@@ -36,7 +36,7 @@ class BackgroundRemoveApp(tk.Tk):
         #GUI
         self.title(f"Remove Background v.{VERSION}")
         self.resizable(False, False)
-        self.set_window_geometry(800, 400)
+        self.set_window_geometry(670, 400)
 
         # Zistenie absolútnej cesty k priečinku, v ktorom sa nachádza skript
         self.script_dir = os.path.dirname(os.path.abspath(__file__))

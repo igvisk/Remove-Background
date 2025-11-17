@@ -27,7 +27,8 @@ import os
 import tkinter as tk
 from tkinter import filedialog, messagebox
 
-VERSION = "0.2"
+
+VERSION = "0.3"
 
 class BackgroundRemoveApp(tk.Tk):
     def __init__(self):

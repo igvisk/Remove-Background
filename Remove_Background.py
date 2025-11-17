@@ -20,15 +20,28 @@
 
 # TBD: 1. automatizacia cesty k folderu
 
-from rembg import remove
 from PIL import Image, ImageTk, ExifTags                         #Náhľad obrázka v Tkinter
-import io
+from rembg import remove, new_session
 import os
 import tkinter as tk
 from tkinter import filedialog, messagebox
 
 
 VERSION = "0.3"
+
+
+# Kontrola dostupnosti modelu
+# Cesta k lokálnemu modelu
+local_model_path = os.path.join(os.path.dirname(__file__), "models", "u2net.onnx")
+
+# Overenie dostupnosti modelu
+if os.path.exists(local_model_path):
+    session = new_session(model_path=local_model_path)
+else:
+    tk.Tk().withdraw()
+    messagebox.showerror("Chýba model", "Model u2net.onnx nie je dostupný.\nVlož ho do priečinka 'models' v projekte.")
+    exit()
+
 
 class BackgroundRemoveApp(tk.Tk):
     def __init__(self):
@@ -94,7 +107,7 @@ class BackgroundRemoveApp(tk.Tk):
             with open(file_path, "rb") as input_file:
                 input_data = input_file.read()
 
-            output_data = remove(input_data)
+            output_data = remove(input_data, session=session)                     #pouzije lokalny model alebo v cache ktory sa nachadza napr c:\Users\IGN\.u2net\u2net.onnx
 
             os.makedirs(os.path.dirname(self.output_path), exist_ok=True)
 

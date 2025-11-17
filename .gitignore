@@ -1,7 +1,6 @@
-# *
-# !Remove_Background
+#ignoruj vsetko
+*
 
-/model/
-/input/
-/output/
-auxiliery.py
+#Neignoruj:
+!Remove_Background.py
+!.gitignore

@@ -30,16 +30,23 @@ from tkinter import filedialog, messagebox
 VERSION = "0.3"
 
 
+# Farby
+color_background = "#4a8dc9"
+fonts = ("Brush Script MT", 14, "bold")
+
 # Kontrola dostupnosti modelu
-# Cesta k lokálnemu modelu
+    # Cesta k lokálnemu modelu
 local_model_path = os.path.join(os.path.dirname(__file__), "models", "u2net.onnx")
 
-# Overenie dostupnosti modelu
-if os.path.exists(local_model_path):
-    session = new_session(model_path=local_model_path)
-else:
+    # Fallback logika
+try:
+    if os.path.exists(local_model_path):
+        session = new_session(model_path=local_model_path)
+    else:
+        session = new_session()  # použije cache alebo stiahne model
+except Exception as e:
     tk.Tk().withdraw()
-    messagebox.showerror("Chýba model", "Model u2net.onnx nie je dostupný.\nVlož ho do priečinka 'models' v projekte.")
+    messagebox.showerror("Chyba pri načítaní modelu", f"Nepodarilo sa inicializovať model:\n{e}")
     exit()
 
 
@@ -56,6 +63,8 @@ class BackgroundRemoveApp(tk.Tk):
 
         # Výstupný súbor sa uloží do podpriečinka "output"
         self.output_path = os.path.join(self.script_dir, "output", "obrazok_remBG.png")
+
+        self.configure(bg= color_background)
 
         self.create_widgets()
 
@@ -75,20 +84,20 @@ class BackgroundRemoveApp(tk.Tk):
 
     def create_widgets(self):   
         # Tlačidlo na výber obrázku
-        tk.Button(self, text="Vyber obrázok na odstránenie pozadia:", command=self.load_image).pack(pady=10)
+        tk.Button(self, text="Vyber obrázok na odstránenie pozadia:", command=self.load_image, bg= color_background, fg="white", font= fonts).pack(pady=10)
 
         # tk.Button(self, text="testovacie").pack(side=tk.LEFT, padx=25, pady=5)        #skusobne tlacitko
         
         # Frame - Rámček na náhľady obrázkov
-        preview_frame = tk.Frame(self)
+        preview_frame = tk.Frame(self, bg= color_background)
         preview_frame.pack(pady=10)
 
         # Label - Pôvodný obrázok
-        self.original_label = tk.Label(preview_frame)
+        self.original_label = tk.Label(preview_frame, borderwidth=4, relief="ridge", bg= color_background)
         self.original_label.pack(side=tk.LEFT, padx=10)
 
         # Label - Upravený obrázok
-        self.processed_label = tk.Label(preview_frame)
+        self.processed_label = tk.Label(preview_frame, borderwidth=4, relief="ridge", bg= color_background)
         self.processed_label.pack(side=tk.RIGHT, padx=10)
 
         # Tlačidlo na ukončenie aplikácie

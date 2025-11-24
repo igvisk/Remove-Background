@@ -35,7 +35,7 @@ color_background = "#4a8dc9"
 fonts = ("Brush Script MT", 14, "bold")
 
 # Kontrola dostupnosti modelu - vzdy pouziva cache ↓ cache home-folder presmerovany na folder Remote-Background
-    # Cesta k lokálnemu modelu - ak sa nenachadza pod models, stiahne ho tam z githubu
+    # Cesta k lokálnemu modelu - ak sa nenachadza pod models, stiahne ho z githubu (funkcia rembg) do folderu models
 os.environ["U2NET_HOME"] = os.path.join(os.path.dirname(__file__), "models")
 local_model_path = os.path.join(os.environ["U2NET_HOME"], "u2net.onnx")
 

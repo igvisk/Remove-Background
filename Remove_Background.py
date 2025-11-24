@@ -21,7 +21,7 @@
 # TBD: 1. automatizacia cesty k folderu
 
 from PIL import Image, ImageTk, ExifTags                         #Náhľad obrázka v Tkinter
-from rembg import remove, new_session
+from rembg import new_session, remove                            #new_session - nacitanie, remove - odstranuje bg
 import os
 import tkinter as tk
 from tkinter import filedialog, messagebox
@@ -34,20 +34,17 @@ VERSION = "0.3"
 color_background = "#4a8dc9"
 fonts = ("Brush Script MT", 14, "bold")
 
-# Kontrola dostupnosti modelu - vzdy pouziva cache / nechce pouzit pod folder models pod root-om - popis pre pripad .exe, v pripade py ide aj bez
-    # Cesta k lokálnemu modelu
-local_model_path = os.path.join(os.path.dirname(__file__), "models", "u2net.onnx")
+# Kontrola dostupnosti modelu - vzdy pouziva cache ↓ cache home-folder presmerovany na folder Remote-Background
+    # Cesta k lokálnemu modelu - ak sa nenachadza pod models, stiahne ho tam z githubu
+os.environ["U2NET_HOME"] = os.path.join(os.path.dirname(__file__), "models")
+local_model_path = os.path.join(os.environ["U2NET_HOME"], "u2net.onnx")
 
-    # Fallback logika
-try:
-    if os.path.exists(local_model_path):
-        session = new_session(model_path=local_model_path)
-    else:
-        session = new_session()  # použije cache alebo stiahne model
-except Exception as e:
-    tk.Tk().withdraw()
-    messagebox.showerror("Chyba pri načítaní modelu", f"Nepodarilo sa inicializovať model:\n{e}")
-    exit()
+session = new_session(model_path=local_model_path)
+
+if not os.path.exists(local_model_path):
+    raise FileNotFoundError(f"Lokálny model sa nenašiel: {local_model_path}")
+
+
 
 
 class BackgroundRemoveApp(tk.Tk):

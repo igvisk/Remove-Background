@@ -27,7 +27,7 @@ import tkinter as tk
 from tkinter import filedialog, messagebox
 
 
-VERSION = "0.3"
+VERSION = "0.4"
 
 
 # Farby
@@ -40,12 +40,6 @@ os.environ["U2NET_HOME"] = os.path.join(os.path.dirname(__file__), "models")
 local_model_path = os.path.join(os.environ["U2NET_HOME"], "u2net.onnx")
 
 session = new_session(model_path=local_model_path)
-
-if not os.path.exists(local_model_path):
-    raise FileNotFoundError(f"Lokálny model sa nenašiel: {local_model_path}")
-
-
-
 
 class BackgroundRemoveApp(tk.Tk):
     def __init__(self):

@@ -34,7 +34,7 @@ VERSION = "0.3"
 color_background = "#4a8dc9"
 fonts = ("Brush Script MT", 14, "bold")
 
-# Kontrola dostupnosti modelu
+# Kontrola dostupnosti modelu - vzdy pouziva cache / nechce pouzit pod folder models pod root-om - popis pre pripad .exe, v pripade py ide aj bez
     # Cesta k lokálnemu modelu
 local_model_path = os.path.join(os.path.dirname(__file__), "models", "u2net.onnx")
 

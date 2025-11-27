@@ -29,7 +29,6 @@ from tkinter import filedialog, messagebox
 
 VERSION = "0.4"
 
-
 # Farby
 color_background = "#4a8dc9"
 fonts = ("Brush Script MT", 14, "bold")
@@ -84,11 +83,11 @@ class BackgroundRemoveApp(tk.Tk):
         preview_frame.pack(pady=10)
 
         # Label - Pôvodný obrázok
-        self.original_label = tk.Label(preview_frame, borderwidth=4, relief="ridge", bg= color_background)
+        self.original_label = tk.Label(preview_frame, borderwidth=4, relief="flat", bg= color_background)       #pred nacitanim obrazku su labely bez reliefov / da sa zabezpecit aj vynechanim relief-u
         self.original_label.pack(side=tk.LEFT, padx=10)
 
         # Label - Upravený obrázok
-        self.processed_label = tk.Label(preview_frame, borderwidth=4, relief="ridge", bg= color_background)
+        self.processed_label = tk.Label(preview_frame, borderwidth=4, relief="flat", bg= color_background)
         self.processed_label.pack(side=tk.RIGHT, padx=10)
 
         # Tlačidlo na ukončenie aplikácie
@@ -142,6 +141,12 @@ class BackgroundRemoveApp(tk.Tk):
                     image = image.rotate(90, expand=True)
         except Exception as e:
             print("EXIF orientácia sa nepodarila načítať:", e)
+        
+        # Zobrazenie obrázkov v okne s upravou okna po načítaní obrázku
+        tk_image = ImageTk.PhotoImage(image)
+        target_label.image = tk_image
+        target_label.config(image=tk_image, relief="raised", borderwidth=4)      #tkinter relief options: ridge, groove, raised, sunken, flat(none)
+
 
         # Zmenšenie obrázka
         image.thumbnail((300, 300))

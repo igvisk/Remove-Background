@@ -142,20 +142,13 @@ class BackgroundRemoveApp(tk.Tk):
         except Exception as e:
             print("EXIF orientácia sa nepodarila načítať:", e)
         
-        # Zobrazenie obrázkov v okne s upravou okna po načítaní obrázku
-        tk_image = ImageTk.PhotoImage(image)
-        target_label.image = tk_image
-        target_label.config(image=tk_image, relief="raised", borderwidth=4)      #tkinter relief options: ridge, groove, raised, sunken, flat(none)
-
-
         # Zmenšenie obrázka
         image.thumbnail((300, 300))
 
-        # Konverzia pre Tkinter -Uloženie referencie, aby sa obrázok nezmizol
+        # Konverzia z objektu PIL.Image na format Tkinter (PhotoImage) -Uloženie referencie, aby obrázok nezmizol + uprava okna po načítaní obrázku
         tk_image = ImageTk.PhotoImage(image)
-        target_label.image = tk_image
-        target_label.config(image=tk_image)
-
+        target_label.image = tk_image                                            #Ulozenie referencie na obrazok do atributu labelu, inak by sa vymazal
+        target_label.config(image=tk_image, relief="raised", borderwidth=4)      #tkinter relief options: ridge, groove, raised, sunken, flat(none)
 
 
 

@@ -24,21 +24,21 @@ from PIL import Image, ImageTk, ExifTags                         #Náhľad obrá
 from rembg import new_session, remove                            #new_session - nacitanie, remove - odstranuje bg
 import os
 import tkinter as tk
-from tkinter import filedialog, messagebox
+from tkinter import filedialog, messagebox, Menu, Label
 
 
-VERSION = "0.4"
-
-# Farby
-color_background = "#4a8dc9"
-fonts = ("Brush Script MT", 14, "bold")
+VERSION = "0.5"
 
 # Kontrola dostupnosti modelu - vzdy pouziva cache ↓ cache home-folder presmerovany na folder Remote-Background
     # Cesta k lokálnemu modelu - ak sa nenachadza pod models, stiahne ho z githubu (funkcia rembg) do folderu models
 os.environ["U2NET_HOME"] = os.path.join(os.path.dirname(__file__), "models")
 local_model_path = os.path.join(os.environ["U2NET_HOME"], "u2net.onnx")
-
 session = new_session(model_path=local_model_path)
+
+# Farby
+color_background = "#4a8dc9"
+fonts = ("Brush Script MT", 14, "bold")
+
 
 class BackgroundRemoveApp(tk.Tk):
     def __init__(self):
@@ -53,14 +53,69 @@ class BackgroundRemoveApp(tk.Tk):
 
         # Výstupný súbor sa uloží do podpriečinka "output"
         self.output_path = os.path.join(self.script_dir, "output", "obrazok_remBG.png")
-
+        
+        # Farba pozadia
         self.configure(bg= color_background)
 
+        # vytvor menu
+        self.create_menu()
+
+        # Widgety
         self.create_widgets()
 
-    #Metody:
+        # klávesové skratky
+        self.bind("<Control-q>", lambda e: self.quit_app())
+        self.bind("<F1>", lambda e: self.show_about())
+
+    # --- Menu ---
+    def create_menu(self):
+        menu_bar = Menu(self)
+        self.config(menu=menu_bar)
+
+        # 1. Súbor
+        file_menu = Menu(menu_bar, tearoff=0)
+        file_menu.add_command(label="Ukončiť   Ctrl+Q", command=self.quit_app)
+        menu_bar.add_cascade(label="Súbor", menu=file_menu)
+
+        # 2. Pomoc
+        help_menu = Menu(menu_bar, tearoff=0)
+        help_menu.add_command(label="O programe   F1", command=self.show_about)
+        menu_bar.add_cascade(label="Pomoc", menu=help_menu)
+
+    # --- Funkcie menu ---
+    def quit_app(self):
+        self.quit()
+
+    def show_about(self):
+        about_window = tk.Toplevel(self)
+        about_window.title("About")
+        about_window.resizable(False, False)
+        about_window.configure(bg=color_background)
+
+        # vycentrovanie about okna
+        self.set_window_geometry(300, 200, about_window)
+
+        text = (
+            "Aplikácia: Remove Background\n"
+            f"Verzia: {VERSION}\n\n"
+            "Autor: Natálka Vitovská\n"
+            "GitHub: github.com/igvisk\n"
+            "License: MIT License"
+        )
+
+        about_label = Label(about_window, text=text, font=("Calibri", 11), justify="left", bg=color_background, fg="white")
+        about_label.pack(padx=20, pady=20)
+        # Skratka
+        about_window.bind("<Escape>", lambda e: about_window.destroy())
+
+    #Metody (widgets, load_image, show_preview):
+    
         # Open app in the center of the screen         
-    def set_window_geometry(self, width, height):
+    def set_window_geometry(self, width, height, window=None):       
+        
+        # ak nepošleš window, použije sa hlavné okno (self)
+        if window is None:
+            window = self
         # Obtain Screen resolution
         screen_width = self.winfo_screenwidth()
         screen_height = self.winfo_screenheight()
@@ -70,7 +125,7 @@ class BackgroundRemoveApp(tk.Tk):
         y = (screen_height // 2) - (height // 2)
 
         # Set position of the window to center 
-        self.geometry(f"{width}x{height}+{x}+{y}")
+        window.geometry(f"{width}x{height}+{x}+{y}")
 
     def create_widgets(self):   
         # Tlačidlo na výber obrázku

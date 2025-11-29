@@ -66,6 +66,7 @@ class BackgroundRemoveApp(tk.Tk):
         self.create_widgets()
 
         # klávesové skratky
+        self.bind("<Control-n>", lambda e: self.load_image())
         self.bind("<Control-o>", lambda e: self.show_output_folder())
         self.bind("<Control-q>", lambda e: self.quit_app())
         self.bind("<F1>", lambda e: self.show_about())
@@ -77,9 +78,10 @@ class BackgroundRemoveApp(tk.Tk):
 
         # 1. Súbor
         file_menu = Menu(menu_bar, tearoff=0)
-        file_menu.add_command(label="Výstupy   Ctrl+O", command=self.show_output_folder)
+        file_menu.add_command(label="Otvor súbor  Ctrl+N", command=self.load_image)
+        file_menu.add_command(label="Výstupy         Ctrl+O", command=self.show_output_folder)
         file_menu.add_separator()
-        file_menu.add_command(label="Ukončiť   Ctrl+Q", command=self.quit_app)
+        file_menu.add_command(label="Ukončiť         Ctrl+Q", command=self.quit_app)
         menu_bar.add_cascade(label="Súbor", menu=file_menu)
         
         

@@ -25,9 +25,10 @@ from rembg import new_session, remove                            #new_session - 
 import os
 import tkinter as tk
 from tkinter import filedialog, messagebox, Menu, Label
+import subprocess                                               #for multiplatform use - fallback
 
 
-VERSION = "0.5"
+VERSION = "0.7"
 
 # Kontrola dostupnosti modelu - vzdy pouziva cache ↓ cache home-folder presmerovany na folder Remote-Background
     # Cesta k lokálnemu modelu - ak sa nenachadza pod models, stiahne ho z githubu (funkcia rembg) do folderu models
@@ -65,6 +66,7 @@ class BackgroundRemoveApp(tk.Tk):
         self.create_widgets()
 
         # klávesové skratky
+        self.bind("<Control-o>", lambda e: self.show_output_folder())
         self.bind("<Control-q>", lambda e: self.quit_app())
         self.bind("<F1>", lambda e: self.show_about())
 
@@ -75,8 +77,12 @@ class BackgroundRemoveApp(tk.Tk):
 
         # 1. Súbor
         file_menu = Menu(menu_bar, tearoff=0)
+        file_menu.add_command(label="Výstupy   Ctrl+O", command=self.show_output_folder)
+        file_menu.add_separator()
         file_menu.add_command(label="Ukončiť   Ctrl+Q", command=self.quit_app)
         menu_bar.add_cascade(label="Súbor", menu=file_menu)
+        
+        
 
         # 2. Pomoc
         help_menu = Menu(menu_bar, tearoff=0)
@@ -84,6 +90,21 @@ class BackgroundRemoveApp(tk.Tk):
         menu_bar.add_cascade(label="Pomoc", menu=help_menu)
 
     # --- Funkcie menu ---
+    def show_output_folder(self):
+        # pass
+        output_dir =  os.path.join(self.script_dir, "output")
+        os.makedirs(output_dir, exist_ok=True)                     #ak folder neexistuje, vytvori sa
+
+        try:
+            # Windows – otvorí priečinok v Explorer
+            os.startfile(output_dir)
+        except AttributeError:
+            # Linux/Mac fallback
+            try:
+                subprocess.Popen(["xdg-open", output_dir])
+            except Exception as e:
+                messagebox.showerror("Chyba", f"Nepodarilo sa otvoriť priečinok:\n{e}")
+
     def quit_app(self):
         self.quit()
 
@@ -94,7 +115,7 @@ class BackgroundRemoveApp(tk.Tk):
         about_window.configure(bg=color_background)
 
         # vycentrovanie about okna
-        self.set_window_geometry(300, 200, about_window)
+        self.set_window_geometry(420, 200, about_window)
 
         text = (
             "Aplikácia: Remove Background\n"
@@ -104,9 +125,9 @@ class BackgroundRemoveApp(tk.Tk):
             "License: MIT License"
         )
 
-        about_label = Label(about_window, text=text, font=("Calibri", 11), justify="left", bg= color_background, fg= color_foregroung)
+        about_label = Label(about_window, text=text, font= fonts, justify="left", bg= color_background, fg= color_foregroung)
         about_label.pack(padx=20, pady=20)
-        # Skratka
+        # Skratka pre about_window
         about_window.bind("<Escape>", lambda e: about_window.destroy())
 
     #Metody (widgets, load_image, show_preview):
@@ -163,16 +184,25 @@ class BackgroundRemoveApp(tk.Tk):
                 input_data = input_file.read()
 
             output_data = remove(input_data, session=session)                     #pouzije lokalny model alebo v cache ktory sa nachadza napr c:\Users\IGN\.u2net\u2net.onnx
+  
+            # Vytvor priečinok output
+            output_dir = os.path.join(self.script_dir, "output")
+            os.makedirs(output_dir, exist_ok=True)
 
-            os.makedirs(os.path.dirname(self.output_path), exist_ok=True)
 
+            # Rozdelenie názvu súboru na meno + príponu
+            base_name, ext = os.path.splitext(os.path.basename(file_path))
+            output_file_name = f"{base_name} -BG_removed{ext}"
+            self.output_path = os.path.join(output_dir, output_file_name)
+
+            # Uloženie výsledku
             with open(self.output_path, "wb") as output_file:
                 output_file.write(output_data)
 
             # Zobraz upravený obrázok
             self.show_preview(self.output_path, self.processed_label)
 
-            messagebox.showinfo("Hotovo", f"Pozadie odstránené!\nUložené do:\n{self.output_path}")
+            messagebox.showinfo("Hotovo", f"Pozadie odstránené!\n\nUložené do:\n{self.output_path}\n\nPre otvorenie lokality súboru stlač Ctrl+O")
         except Exception as e:
             messagebox.showerror("Chyba", f"Nepodarilo sa spracovať obrázok:\n{e}")
 

@@ -28,7 +28,7 @@ from tkinter import filedialog, messagebox, Menu, Label
 import subprocess                                               #for multiplatform use - fallback
 
 
-VERSION = "0.7"
+VERSION = "0.7b"
 
 # Kontrola dostupnosti modelu - vzdy pouziva cache ↓ cache home-folder presmerovany na folder Remote-Background
     # Cesta k lokálnemu modelu - ak sa nenachadza pod models, stiahne ho z githubu (funkcia rembg) do folderu models
@@ -52,6 +52,10 @@ class BackgroundRemoveApp(tk.Tk):
 
         # Zistenie absolútnej cesty k priečinku, v ktorom sa nachádza skript
         self.script_dir = os.path.dirname(os.path.abspath(__file__))
+
+        # Nastavenie ikony aplikácie
+        # icon_path = os.path.join(self.script_dir, "app_icon.ico")
+        # self.iconbitmap(icon_path)
 
         # Výstupný súbor sa uloží do podpriečinka "output"
         self.output_path = os.path.join(self.script_dir, "output", "obrazok_remBG.png")

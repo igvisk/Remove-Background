@@ -126,7 +126,6 @@ class BackgroundRemoveApp(tk.Tk):
             "GitHub: github.com/igvisk\n"
             "Táto aplikácia používa knižnicu rembg\n"
             "Licencia: MIT License (Daniel Gatis, rembg)\n"
-
         )
 
         about_label = Label(about_window, text=text, font= fonts, justify="left", bg= color_background, fg= color_foregroung)
@@ -134,7 +133,7 @@ class BackgroundRemoveApp(tk.Tk):
         # Skratka pre about_window
         about_window.bind("<Escape>", lambda e: about_window.destroy())
 
-    #Metody (widgets, load_image, show_preview):
+    #Metody (set window geometry. widgets, load_image, show_preview):
     
         # Open app in the center of the screen         
     def set_window_geometry(self, width, height, window=None):       
@@ -156,8 +155,6 @@ class BackgroundRemoveApp(tk.Tk):
     def create_widgets(self):   
         # Tlačidlo na výber obrázku
         tk.Button(self, text="Vyber obrázok na odstránenie pozadia:", command=self.load_image, bg= color_background, fg= color_foregroung, font= fonts).pack(pady=10)
-
-        # tk.Button(self, text="testovacie").pack(side=tk.LEFT, padx=25, pady=5)        #skusobne tlacitko
         
         # Frame - Rámček na náhľady obrázkov
         preview_frame = tk.Frame(self, bg= color_background)
@@ -170,11 +167,8 @@ class BackgroundRemoveApp(tk.Tk):
         # Label - Upravený obrázok
         self.processed_label = tk.Label(preview_frame, borderwidth=4, relief="flat", bg= color_background)
         self.processed_label.pack(side=tk.RIGHT, padx=10)
-
-        # Tlačidlo na ukončenie aplikácie
-        # tk.Button(self, text="Ukončiť", command=self.quit).pack(side=tk.BOTTOM, pady=20)
-
-
+        
+        #Nacitanie obrázku
     def load_image(self):
         file_path = filedialog.askopenfilename(filetypes=[("Obrázky", "*.png *.jpg *.jpeg")])
         if not file_path:
@@ -193,7 +187,6 @@ class BackgroundRemoveApp(tk.Tk):
             output_dir = os.path.join(self.script_dir, "output")
             os.makedirs(output_dir, exist_ok=True)
 
-
             # Rozdelenie názvu súboru na meno + príponu
             base_name, ext = os.path.splitext(os.path.basename(file_path))
             output_file_name = f"{base_name} -BG_removed{ext}"
@@ -209,7 +202,6 @@ class BackgroundRemoveApp(tk.Tk):
             messagebox.showinfo("Hotovo", f"Pozadie odstránené!\n\nUložené do:\n{self.output_path}\n\nPre otvorenie lokality súboru stlač Ctrl+O")
         except Exception as e:
             messagebox.showerror("Chyba", f"Nepodarilo sa spracovať obrázok:\n{e}")
-
 
         #Zobrazenie obrazka v okne
     def show_preview(self, file_path, target_label):
@@ -239,7 +231,6 @@ class BackgroundRemoveApp(tk.Tk):
         tk_image = ImageTk.PhotoImage(image)
         target_label.image = tk_image                                            #Ulozenie referencie na obrazok do atributu labelu, inak by sa vymazal
         target_label.config(image=tk_image, relief="raised", borderwidth=4)      #tkinter relief options: ridge, groove, raised, sunken, flat(none)
-
 
 
 if __name__ == "__main__":

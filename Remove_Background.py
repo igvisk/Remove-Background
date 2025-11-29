@@ -117,14 +117,16 @@ class BackgroundRemoveApp(tk.Tk):
         about_window.configure(bg=color_background)
 
         # vycentrovanie about okna
-        self.set_window_geometry(420, 200, about_window)
+        self.set_window_geometry(570, 230, about_window)
 
         text = (
             "Aplikácia: Remove Background\n"
             f"Verzia: {VERSION}\n\n"
             "Autor: Igor Vitovský\n"
             "GitHub: github.com/igvisk\n"
-            "License: MIT License"
+            "Táto aplikácia používa knižnicu rembg\n"
+            "Licencia: MIT License (Daniel Gatis, rembg)\n"
+
         )
 
         about_label = Label(about_window, text=text, font= fonts, justify="left", bg= color_background, fg= color_foregroung)

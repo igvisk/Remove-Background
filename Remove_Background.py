@@ -35,9 +35,10 @@ os.environ["U2NET_HOME"] = os.path.join(os.path.dirname(__file__), "models")
 local_model_path = os.path.join(os.environ["U2NET_HOME"], "u2net.onnx")
 session = new_session(model_path=local_model_path)
 
-# Farby
+# Farby, fonty
 color_background = "#4a8dc9"
-fonts = ("Brush Script MT", 14, "bold")
+color_foregroung = "#FFFCF7"
+fonts = ("Cascadia Mono ExtraLight", 14, "bold")
 
 
 class BackgroundRemoveApp(tk.Tk):
@@ -98,12 +99,12 @@ class BackgroundRemoveApp(tk.Tk):
         text = (
             "Aplikácia: Remove Background\n"
             f"Verzia: {VERSION}\n\n"
-            "Autor: Natálka Vitovská\n"
+            "Autor: Igor Vitovský\n"
             "GitHub: github.com/igvisk\n"
             "License: MIT License"
         )
 
-        about_label = Label(about_window, text=text, font=("Calibri", 11), justify="left", bg=color_background, fg="white")
+        about_label = Label(about_window, text=text, font=("Calibri", 11), justify="left", bg= color_background, fg= color_foregroung)
         about_label.pack(padx=20, pady=20)
         # Skratka
         about_window.bind("<Escape>", lambda e: about_window.destroy())
@@ -129,7 +130,7 @@ class BackgroundRemoveApp(tk.Tk):
 
     def create_widgets(self):   
         # Tlačidlo na výber obrázku
-        tk.Button(self, text="Vyber obrázok na odstránenie pozadia:", command=self.load_image, bg= color_background, fg="white", font= fonts).pack(pady=10)
+        tk.Button(self, text="Vyber obrázok na odstránenie pozadia:", command=self.load_image, bg= color_background, fg= color_foregroung, font= fonts).pack(pady=10)
 
         # tk.Button(self, text="testovacie").pack(side=tk.LEFT, padx=25, pady=5)        #skusobne tlacitko
         

@@ -17,9 +17,6 @@
 #treba skusit nainportovat 'onnxruntime' - pip install onnxruntime
 #!!pozn pri prvom spusteni sa stiahol cely model do cache file, v buducnosti bude potrebne ho asi zahrnut do exe suboru, nachadza sa: c:\Users\IGN\.u2net\u2net.onnx - vyskusal som spustit skript bez inetu a funguje, takze takto isto treba preverit ci to pojde po vytvoreni .exe, ak nie treba ten subor pridat do instalatora nejak
 
-
-# TBD: 1. automatizacia cesty k folderu
-
 from PIL import Image, ImageTk, ExifTags                         #Náhľad obrázka v Tkinter
 from rembg import new_session, remove                            #new_session - nacitanie, remove - odstranuje bg
 import os
@@ -38,7 +35,7 @@ session = new_session(model_path=local_model_path)
 
 # Farby, fonty
 color_background = "#4a8dc9"
-color_foregroung = "#FFFCF7"
+color_foreground = "#FFFCF7"
 fonts = ("Cascadia Mono ExtraLight", 14, "bold")
 
 
@@ -54,11 +51,14 @@ class BackgroundRemoveApp(tk.Tk):
         self.script_dir = os.path.dirname(os.path.abspath(__file__))
 
         # Nastavenie ikony aplikácie
-        # icon_path = os.path.join(self.script_dir, "app_icon.ico")
-        # self.iconbitmap(icon_path)
+        try:
+            icon_path = os.path.join(self.script_dir, "app_icon.ico")
+            self.iconbitmap(icon_path)
+        except Exception as e:
+             messagebox.showwarning("Upozornenie", f"Ikona sa nepodarila načítať:\n{e}")
 
         # Výstupný súbor sa uloží do podpriečinka "output"
-        self.output_path = os.path.join(self.script_dir, "output", "obrazok_remBG.png")
+        # self.output_path = os.path.join(self.script_dir, "output", "obrazok_remBG.png") #######rendundant
         
         # Farba pozadia
         self.configure(bg= color_background)
@@ -123,16 +123,21 @@ class BackgroundRemoveApp(tk.Tk):
         # vycentrovanie about okna
         self.set_window_geometry(570, 230, about_window)
 
+        # Nastavenie ikony aj pre About okno
+        icon_path = os.path.join(self.script_dir, "app_icon.ico")
+        if os.path.exists(icon_path):
+            about_window.iconbitmap(icon_path)   # Windows (.ico)
+
         text = (
             "Aplikácia: Remove Background\n"
             f"Verzia: {VERSION}\n\n"
             "Autor: Igor Vitovský\n"
             "GitHub: github.com/igvisk\n"
             "Táto aplikácia používa knižnicu rembg\n"
-            "Licencia: MIT License (Daniel Gatis, rembg)\n"
+            "Licencia: MIT License (Daniel Gatis, rembg)"
         )
 
-        about_label = Label(about_window, text=text, font= fonts, justify="left", bg= color_background, fg= color_foregroung)
+        about_label = Label(about_window, text=text, font= fonts, justify="left", bg= color_background, fg= color_foreground)
         about_label.pack(padx=20, pady=20)
         # Skratka pre about_window
         about_window.bind("<Escape>", lambda e: about_window.destroy())
@@ -158,7 +163,7 @@ class BackgroundRemoveApp(tk.Tk):
 
     def create_widgets(self):   
         # Tlačidlo na výber obrázku
-        tk.Button(self, text="Vyber obrázok na odstránenie pozadia:", command=self.load_image, bg= color_background, fg= color_foregroung, font= fonts).pack(pady=10)
+        tk.Button(self, text="Vyber obrázok na odstránenie pozadia:", command=self.load_image, bg= color_background, fg= color_foreground, font= fonts).pack(pady=10)
         
         # Frame - Rámček na náhľady obrázkov
         preview_frame = tk.Frame(self, bg= color_background)

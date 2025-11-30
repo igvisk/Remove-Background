@@ -14,7 +14,6 @@
 #Su potrebne kniznice 3: 
 # pip install rembg
 # pip install pillow
-#treba skusit nainportovat 'onnxruntime' - pip install onnxruntime
 #!!pozn pri prvom spusteni sa stiahol cely model do cache file, v buducnosti bude potrebne ho asi zahrnut do exe suboru, nachadza sa: c:\Users\IGN\.u2net\u2net.onnx - vyskusal som spustit skript bez inetu a funguje, takze takto isto treba preverit ci to pojde po vytvoreni .exe, ak nie treba ten subor pridat do instalatora nejak
 
 from PIL import Image, ImageTk, ExifTags                         #Náhľad obrázka v Tkinter
@@ -38,7 +37,6 @@ color_background = "#4a8dc9"
 color_foreground = "#FFFCF7"
 fonts = ("Cascadia Mono ExtraLight", 14, "bold")
 
-
 class BackgroundRemoveApp(tk.Tk):
     def __init__(self):
         super().__init__()
@@ -52,13 +50,10 @@ class BackgroundRemoveApp(tk.Tk):
 
         # Nastavenie ikony aplikácie
         try:
-            icon_path = os.path.join(self.script_dir, "app_icon.ico")
+            icon_path = os.path.join(self.script_dir, "Remove-Background.ico")
             self.iconbitmap(icon_path)
         except Exception as e:
              messagebox.showwarning("Upozornenie", f"Ikona sa nepodarila načítať:\n{e}")
-
-        # Výstupný súbor sa uloží do podpriečinka "output"
-        # self.output_path = os.path.join(self.script_dir, "output", "obrazok_remBG.png") #######rendundant
         
         # Farba pozadia
         self.configure(bg= color_background)
@@ -75,6 +70,7 @@ class BackgroundRemoveApp(tk.Tk):
         self.bind("<Control-q>", lambda e: self.quit_app())
         self.bind("<F1>", lambda e: self.show_about())
 
+    # Metódy
     # --- Menu ---
     def create_menu(self):
         menu_bar = Menu(self)
@@ -88,8 +84,6 @@ class BackgroundRemoveApp(tk.Tk):
         file_menu.add_command(label="Ukončiť         Ctrl+Q", command=self.quit_app)
         menu_bar.add_cascade(label="Súbor", menu=file_menu)
         
-        
-
         # 2. Pomoc
         help_menu = Menu(menu_bar, tearoff=0)
         help_menu.add_command(label="O programe   F1", command=self.show_about)
@@ -124,7 +118,7 @@ class BackgroundRemoveApp(tk.Tk):
         self.set_window_geometry(570, 230, about_window)
 
         # Nastavenie ikony aj pre About okno
-        icon_path = os.path.join(self.script_dir, "app_icon.ico")
+        icon_path = os.path.join(self.script_dir, "Remove-Background.ico")
         if os.path.exists(icon_path):
             about_window.iconbitmap(icon_path)   # Windows (.ico)
 

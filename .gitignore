@@ -1,7 +1,8 @@
-#ignoruj vsetko
+# ignore all
 *
 
-#Neignoruj:
+# do not ignore:
 !Remove_Background.py
 !.gitignore
 !README.md
+!Remove-Background.ico

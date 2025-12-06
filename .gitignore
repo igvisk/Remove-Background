@@ -6,3 +6,7 @@
 !.gitignore
 !README.md
 !Remove-Background.ico
+
+#before lfs initialization
+!.gitattributes
+!models/

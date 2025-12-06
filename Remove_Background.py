@@ -239,16 +239,3 @@ class BackgroundRemoveApp(tk.Tk):
 if __name__ == "__main__":
     app = BackgroundRemoveApp()
     app.mainloop()
-
-
-#dalsie pouzitie kniznice PIL:
-# from PIL import Image
-
-# # Načítaj obrázok
-# img = Image.open("obrazok.jpg")
-
-# # Zmeň veľkosť
-# img_resized = img.resize((300, 300))
-
-# # Ulož nový obrázok
-# img_resized.save("obrazok_zmenseny.jpg")

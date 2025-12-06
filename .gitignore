@@ -9,4 +9,4 @@
 
 #before lfs initialization
 !.gitattributes
-!models/
+!models/**

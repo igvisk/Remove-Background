@@ -2,21 +2,9 @@
 #1. pip install rembg
 # Usage as a cli
 
-# After the installation step you can use rembg just typing rembg in your terminal window.
-
-# The rembg command has 4 subcommands, one for each input type:
-
-#     i for files
-#     p for folders
-#     s for http server
-#     b for RGB24 pixel binary stream
-
-#Su potrebne kniznice 3: 
-# pip install rembg
-# pip install pillow
 #!!pozn pri prvom spusteni sa stiahol cely model do cache file, v buducnosti bude potrebne ho asi zahrnut do exe suboru, nachadza sa: c:\Users\IGN\.u2net\u2net.onnx - vyskusal som spustit skript bez inetu a funguje, takze takto isto treba preverit ci to pojde po vytvoreni .exe, ak nie treba ten subor pridat do instalatora nejak
 
-from PIL import Image, ImageTk, ExifTags                         #Náhľad obrázka v Tkinter
+from PIL import Image, ImageTk, ExifTags                         #Náhľad obrázka v Tkinter - pillow library
 from rembg import new_session, remove                            #new_session - nacitanie, remove - odstranuje bg
 import os
 import tkinter as tk

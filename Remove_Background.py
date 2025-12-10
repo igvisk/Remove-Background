@@ -1,6 +1,4 @@
 #This app using rembg and onnxruntime (nvdia,cuda) source: https://github.com/danielgatis/rembg?tab=readme-ov-file
-#1. pip install rembg
-# Usage as a cli
 
 from PIL import Image, ImageTk, ExifTags                         #Náhľad obrázka v Tkinter - pillow library
 from rembg import new_session, remove                            #new_session - nacitanie, remove - odstranuje bg

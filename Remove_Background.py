@@ -9,10 +9,10 @@ from rembg import new_session, remove                            #new_session - 
 import os
 import tkinter as tk
 from tkinter import filedialog, messagebox, Menu, Label
-import subprocess                                               #for multiplatform use - fallback
+import subprocess                                               #for multiplatform use - fallback / Linux
 
 
-VERSION = "0.7b"
+VERSION = "1.0"
 
 # Kontrola dostupnosti modelu - vzdy pouziva cache ↓ cache home-folder presmerovany na folder Remote-Background
     # Cesta k lokálnemu modelu - ak sa nenachadza pod models, stiahne ho z githubu (funkcia rembg) do folderu models
@@ -145,8 +145,13 @@ class BackgroundRemoveApp(tk.Tk):
 
     def create_widgets(self):   
         # Tlačidlo na výber obrázku
-        tk.Button(self, text="Vyber obrázok na odstránenie pozadia:", command=self.load_image, bg= color_background, fg= color_foreground, font= fonts).pack(pady=10)
-        
+        btn = tk.Button(self, text="Vyber obrázok na odstránenie pozadia:", command=self.load_image, bg=color_background, fg=color_foreground, font=fonts)
+        btn.pack(pady=10)
+
+        # naviazanie hover efektu
+        btn.bind("<Enter>", self.on_enter)
+        btn.bind("<Leave>", self.on_leave)
+
         # Frame - Rámček na náhľady obrázkov
         preview_frame = tk.Frame(self, bg= color_background)
         preview_frame.pack(pady=10)
@@ -158,6 +163,15 @@ class BackgroundRemoveApp(tk.Tk):
         # Label - Upravený obrázok
         self.processed_label = tk.Label(preview_frame, borderwidth=4, relief="flat", bg= color_background)
         self.processed_label.pack(side=tk.RIGHT, padx=10)
+
+        # --- Hover efekty pre tlačidlá ---
+    def on_enter(self, e):
+        e.widget['background'] = '#6fa8dc'   # svetlejšia modrá
+        e.widget['foreground'] = '#ffffff'   # biely text
+
+    def on_leave(self, e):
+        e.widget['background'] = '#4a8dc9'   # pôvodná modrá
+        e.widget['foreground'] = '#FFFCF7'   # pôvodná farba textu
         
         #Nacitanie obrázku
     def load_image(self):

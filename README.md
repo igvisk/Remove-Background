@@ -7,12 +7,26 @@ The app provides a preview of the original and processed image, and saves the ou
 
 ---
 
+## 📥 Download (Windows)
+
+👉 **Precompiled Windows executable** is available on the Releases page:  
+https://github.com/igvisk/Remove-Background/releases
+
+**How to run:**
+1. Download the ZIP file from Releases
+2. Extract it
+3. Run `Remove-Background.exe`
+
+⚠️ *Windows SmartScreen may show a warning because the app is not digitally signed.*
+
+---
+
 ## ✨ Features
 - Background removal powered by **rembg** and **onnxruntime** (CPU/GPU with CUDA if available).
 - GUI built with **Tkinter**.
 - Image preview before and after processing.
 - Offline support: the ONNX model (`u2net.onnx`) is cached locally and can be bundled with the app.
-- Menu shortcuts:
+- Keyboard shortcuts:
   - **Ctrl+N** → Open image
   - **Ctrl+O** → Open output folder
   - **Ctrl+Q** → Quit app
@@ -21,13 +35,13 @@ The app provides a preview of the original and processed image, and saves the ou
 
 ---
 
-
 ## 🖼️ Preview
   
-[![Remove background](images/rb_sk.png)]
+![Remove background](images/rb_sk.png)
 
+---
 
-## 📦 Installation
+## 🛠️ Installation
 
 1. Clone the repository:
    ```bash
@@ -37,28 +51,45 @@ The app provides a preview of the original and processed image, and saves the ou
    - Install dependencies:
 pip install rembg pillow
 - Note: rembg automatically installs onnxruntime.
+
 For GPU acceleration, install onnxruntime-gpu.
 - Ensure the U²Net model is available:
 - By default, rembg downloads u2net.onnx into a cache folder (~/.u2net/).
 - This app overrides the cache location with a local models/ folder:
   models/u2net.onnx
 
-▶️ UsageRun the app:python app.py
-Steps:- Click "Select image to remove background".
+---
+
+▶️ Usage (from source)
+python Remove_Background.py
+
+Steps:
+- Click "Select image to remove background".
 - Preview the original image.
 - The processed image (background removed) will be shown and saved into the output/ folder.
 - Use Ctrl+O to open the output folder.
 📂 Project Structureremove-background-app/
 │
-├── app.py              # Main application
-├── models/             # Contains u2net.onnx model
-├── output/             # Processed images are saved here
-└── Remove-Background.ico  # Application icon
+├── Remove_Background.py  # Main application
+├── models/               # Contains u2net.onnx model
+├── output/               # Processed images are saved here
+├── images/               # README images
+└── Remove-Background.ico # Application icon
 
+---
 
-⚡ Notes- Works offline once the ONNX model is downloaded.
-- Tested on Windows; Linux/Mac supported with minor adjustments (folder opening uses xdg-open).
-- License: MIT (Daniel Gatis, rembg).
-👤 Author- Igor Vitovský
-- GitHub: igvisk
+⚡ Notes
 
+Works fully offline after the model is available
+
+Tested on Windows
+
+Linux / macOS supported with minor adjustments
+(folder opening uses xdg-open)
+
+---
+
+👤 Author
+
+Igor Vitovský
+GitHub: https://github.com/igvisk

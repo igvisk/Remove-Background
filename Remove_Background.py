@@ -26,7 +26,7 @@ class BackgroundRemoveApp(TkinterDnD.Tk):                   #TkinterDnD - drag&d
     def __init__(self):
         super().__init__()
         #GUI
-        self.title(f"Remove Background v.{VERSION}")
+        self.title(f"Remove Background v{VERSION}")
         self.resizable(False, False)
         self.set_window_geometry(670, 400)
 
@@ -111,7 +111,7 @@ class BackgroundRemoveApp(TkinterDnD.Tk):                   #TkinterDnD - drag&d
         about_window.configure(bg=color_background)
 
         # vycentrovanie about okna
-        self.set_window_geometry(570, 230, about_window)
+        self.set_window_geometry(570, 280, about_window)
 
         # Nastavenie ikony aj pre About okno
         icon_path = os.path.join(self.script_dir, "Remove-Background.ico")
@@ -119,12 +119,13 @@ class BackgroundRemoveApp(TkinterDnD.Tk):                   #TkinterDnD - drag&d
             about_window.iconbitmap(icon_path)   # Windows (.ico)
 
         text = (
-            "Aplikácia: Remove Background\n"
-            f"Verzia: {VERSION}\n\n"
-            "Autor: Igor Vitovský\n"
-            "GitHub: github.com/igvisk\n"
-            "Táto aplikácia používa knižnicu rembg\n"
-            "Licencia: MIT License (Daniel Gatis, rembg)"
+                "Aplikácia: Remove Background\n"
+                f"Verzia: {VERSION}\n\n"
+                "Autor: Igor Vitovský\n"
+                "GitHub: github.com/igvisk\n\n"
+                "Aplikácia využíva AI model U²Net\n"
+                "na presné odstránenie pozadia.\n"
+                "Všetko spracovanie prebieha offline."
         )
 
         about_label = Label(about_window, text=text, font= fonts, justify="left", bg= color_background, fg= color_foreground)

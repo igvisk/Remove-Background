@@ -17,6 +17,8 @@ https://github.com/igvisk/Remove-Background/releases
 2. Extract it
 3. Run `Remove-Background.exe`
 
+🕒 Please note: The U²Net AI model used by the app is quite large, so the first startup may take a few seconds while the model loads into RAM. This is normal behavior — once loaded, processing is fast and fully offline.
+
 ⚠️ *Windows SmartScreen may show a warning because the app is not digitally signed.*
 
 ---

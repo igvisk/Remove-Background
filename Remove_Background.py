@@ -9,15 +9,15 @@ import subprocess                                               #for multiplatfo
 from tkinterdnd2 import DND_FILES, TkinterDnD                   #drag&drop lib
 
 
-VERSION = "1.1b"
+VERSION = "1.1"
 
-# Kontrola dostupnosti modelu - vzdy pouziva cache ↓ cache home-folder presmerovany na folder Remote-Background
+# Model path - Kontrola dostupnosti modelu - vzdy pouziva cache ↓ cache home-folder presmerovany na folder Remote-Background
     # Cesta k lokálnemu modelu - ak sa nenachadza pod models, stiahne ho z githubu (funkcia rembg) do folderu models
 os.environ["U2NET_HOME"] = os.path.join(os.path.dirname(__file__), "models")
 local_model_path = os.path.join(os.environ["U2NET_HOME"], "u2net.onnx")
 session = new_session(model_path=local_model_path)
 
-# Farby, fonty
+# Colors, fonts
 color_background = "#4a8dc9"
 color_foreground = "#FFFCF7"
 fonts = ("Cascadia Mono ExtraLight", 14, "bold")
@@ -33,17 +33,17 @@ class BackgroundRemoveApp(TkinterDnD.Tk):                   #TkinterDnD - drag&d
         # Zistenie absolútnej cesty k priečinku, v ktorom sa nachádza skript
         self.script_dir = os.path.dirname(os.path.abspath(__file__))
 
-        # Nastavenie ikony aplikácie
+        # Icon
         try:
             icon_path = os.path.join(self.script_dir, "Remove-Background.ico")
             self.iconbitmap(icon_path)
         except Exception as e:
              messagebox.showwarning("Upozornenie", f"Ikona sa nepodarila načítať:\n{e}")
         
-        # Farba pozadia
+        # Background color
         self.configure(bg= color_background)
 
-        # vytvor menu
+        # Vytvor menu
         self.create_menu()
 
         # Widgety
@@ -60,7 +60,7 @@ class BackgroundRemoveApp(TkinterDnD.Tk):                   #TkinterDnD - drag&d
         self.bind("<F1>", lambda e: self.show_about())
 
     # Metódy
-    # Handle_Drop
+    # Drag & Drop
     def handle_drop(self, event):
         file_path = event.data.strip("{}")          #odstráni {} ak sú vo Windows
         if os.path.isfile(file_path):
@@ -84,7 +84,7 @@ class BackgroundRemoveApp(TkinterDnD.Tk):                   #TkinterDnD - drag&d
         help_menu.add_command(label="O programe   F1", command=self.show_about)
         menu_bar.add_cascade(label="Pomoc", menu=help_menu)
 
-    # --- Funkcie menu ---
+    # Funkcie menu
     def show_output_folder(self):
         # pass
         output_dir =  os.path.join(self.script_dir, "output")
@@ -103,6 +103,7 @@ class BackgroundRemoveApp(TkinterDnD.Tk):                   #TkinterDnD - drag&d
     def quit_app(self):
         self.quit()
 
+    # About window
     def show_about(self):
         about_window = tk.Toplevel(self)
         about_window.title("About")
@@ -133,7 +134,7 @@ class BackgroundRemoveApp(TkinterDnD.Tk):                   #TkinterDnD - drag&d
 
     #Metody (set window geometry. widgets, load_image, show_preview):
     
-        # Open app in the center of the screen         
+        # Window geometry - Open app in the center of the screen         
     def set_window_geometry(self, width, height, window=None):       
         
         # ak nepošleš window, použije sa hlavné okno (self)
@@ -150,9 +151,10 @@ class BackgroundRemoveApp(TkinterDnD.Tk):                   #TkinterDnD - drag&d
         # Set position of the window to center 
         window.geometry(f"{width}x{height}+{x}+{y}")
 
+        # Widgets
     def create_widgets(self):   
         # Tlačidlo na výber obrázku
-        btn = tk.Button(self, text="Vyber obrázok na odstránenie pozadia:", command=self.load_image, bg=color_background, fg=color_foreground, font=fonts)
+        btn = tk.Button(self, text="Vyber alebo pretiahni obrázok ", command=self.load_image, bg=color_background, fg=color_foreground, font=fonts)
         btn.pack(pady=10)
 
         # naviazanie hover efektu
@@ -180,12 +182,13 @@ class BackgroundRemoveApp(TkinterDnD.Tk):                   #TkinterDnD - drag&d
         e.widget['background'] = '#4a8dc9'   # pôvodná modrá
         e.widget['foreground'] = '#FFFCF7'   # pôvodná farba textu
         
-        #Nacitanie obrázku
+        # Load file
     def load_image(self):
         file_path = filedialog.askopenfilename(filetypes=[("Obrázky", "*.png *.jpg *.jpeg")])
         if file_path:
             self.process_file(file_path)
-           
+        
+        # Process file
     def process_file(self, file_path):
         try:
             # Zobraz pôvodný obrázok
@@ -238,7 +241,7 @@ class BackgroundRemoveApp(TkinterDnD.Tk):                   #TkinterDnD - drag&d
         except Exception as e:
             print("EXIF orientácia sa nepodarila načítať:", e)
         
-        # Zmenšenie obrázka
+        # Zmenšenie preview obrázka
         image.thumbnail((300, 300))
 
         # Konverzia z objektu PIL.Image na format Tkinter (PhotoImage) -Uloženie referencie, aby obrázok nezmizol + uprava okna po načítaní obrázku

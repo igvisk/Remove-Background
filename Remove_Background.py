@@ -6,9 +6,10 @@ import os
 import tkinter as tk
 from tkinter import filedialog, messagebox, Menu, Label
 import subprocess                                               #for multiplatform use - fallback / Linux
+from tkinterdnd2 import DND_FILES, TkinterDnD                   #drag&drop lib
 
 
-VERSION = "1.0"
+VERSION = "1.1b"
 
 # Kontrola dostupnosti modelu - vzdy pouziva cache ↓ cache home-folder presmerovany na folder Remote-Background
     # Cesta k lokálnemu modelu - ak sa nenachadza pod models, stiahne ho z githubu (funkcia rembg) do folderu models
@@ -21,7 +22,7 @@ color_background = "#4a8dc9"
 color_foreground = "#FFFCF7"
 fonts = ("Cascadia Mono ExtraLight", 14, "bold")
 
-class BackgroundRemoveApp(tk.Tk):
+class BackgroundRemoveApp(TkinterDnD.Tk):                   #TkinterDnD - drag&drop
     def __init__(self):
         super().__init__()
         #GUI
@@ -48,6 +49,10 @@ class BackgroundRemoveApp(tk.Tk):
         # Widgety
         self.create_widgets()
 
+        # Drag & Drop registrácia
+        self.drop_target_register(DND_FILES)
+        self.dnd_bind("<<Drop>>", self.handle_drop)
+
         # klávesové skratky
         self.bind("<Control-n>", lambda e: self.load_image())
         self.bind("<Control-o>", lambda e: self.show_output_folder())
@@ -55,6 +60,12 @@ class BackgroundRemoveApp(tk.Tk):
         self.bind("<F1>", lambda e: self.show_about())
 
     # Metódy
+    # Handle_Drop
+    def handle_drop(self, event):
+        file_path = event.data.strip("{}")          #odstráni {} ak sú vo Windows
+        if os.path.isfile(file_path):
+            self.process_file(file_path)
+
     # --- Menu ---
     def create_menu(self):
         menu_bar = Menu(self)
@@ -172,8 +183,10 @@ class BackgroundRemoveApp(tk.Tk):
         #Nacitanie obrázku
     def load_image(self):
         file_path = filedialog.askopenfilename(filetypes=[("Obrázky", "*.png *.jpg *.jpeg")])
-        if not file_path:
-            return
+        if file_path:
+            self.process_file(file_path)
+           
+    def process_file(self, file_path):
         try:
             # Zobraz pôvodný obrázok
             self.show_preview(file_path, self.original_label)

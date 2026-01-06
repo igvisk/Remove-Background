@@ -28,7 +28,7 @@ class BackgroundRemoveApp(TkinterDnD.Tk):                   #TkinterDnD - drag&d
         #GUI
         self.title(f"Remove Background v{VERSION}")
         self.resizable(False, False)
-        self.set_window_geometry(660, 445)
+        self.set_window_geometry(660, 430)
 
         # Zistenie absolútnej cesty k priečinku, v ktorom sa nachádza skript
         self.script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -62,16 +62,37 @@ class BackgroundRemoveApp(TkinterDnD.Tk):                   #TkinterDnD - drag&d
     # Metódy
     # Drag & Drop
     def handle_drop(self, event):
+        # short highlite of all widgets after drop
+        self.highlight("#ec7f1f")       # alt: #6fa8dc 
+        
+        # after X ms revert back color
+        self.after(3800, lambda: self.highlight(color_background))
+        
         file_path = event.data.strip("{}")          #odstráni {} ak sú vo Windows
         if os.path.isfile(file_path):
             self.process_file(file_path)
+
+    def highlight(self, color):
+        self.processed_label.configure(bg=color)
+        
+        # self.preview_frame.configure(bg=color)    # zmeni aj preview bg
+        # popripade zmena bg pre vsetky widgety ↓
+        # # zmení farbu root okna
+        # self.configure(bg=color)
+
+        # # zmení farbu všetkých widgetov, ktoré majú bg
+        # for widget in self.winfo_children():                
+        #     try:
+        #         widget.configure(bg=color)
+        #     except:
+        #       pass
 
     # --- Menu ---
     def create_menu(self):
         menu_bar = Menu(self)
         self.config(menu=menu_bar)
 
-        # 1. Súbor
+        # 1. File
         file_menu = Menu(menu_bar, tearoff=0)
         file_menu.add_command(label="Otvor súbor  Ctrl+N", command=self.load_image)
         file_menu.add_command(label="Výstupy         Ctrl+O", command=self.show_output_folder)
@@ -79,7 +100,7 @@ class BackgroundRemoveApp(TkinterDnD.Tk):                   #TkinterDnD - drag&d
         file_menu.add_command(label="Ukončiť         Ctrl+Q", command=self.quit_app)
         menu_bar.add_cascade(label="Súbor", menu=file_menu)
         
-        # 2. Pomoc
+        # 2. Help
         help_menu = Menu(menu_bar, tearoff=0)
         help_menu.add_command(label="O programe   F1", command=self.show_about)
         menu_bar.add_cascade(label="Pomoc", menu=help_menu)

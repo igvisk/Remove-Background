@@ -86,6 +86,11 @@ class BackgroundRemoveApp(TkinterDnD.Tk):                   #TkinterDnD - drag&d
         #         widget.configure(bg=color)
         #     except:
         #       pass
+    
+    # po kliknuti na processed label otvori a oznaci subor
+    def open_and_select(self, path):
+        subprocess.Popen(f'explorer /select,"{path}"')
+
 
     # --- Menu ---
     def create_menu(self):
@@ -196,6 +201,10 @@ class BackgroundRemoveApp(TkinterDnD.Tk):                   #TkinterDnD - drag&d
         # Label - Upravený obrázok
         self.processed_label = tk.Label(self.preview_frame, borderwidth=4, relief="flat", bg= color_background)
         self.processed_label.pack(side=tk.RIGHT, padx=5)
+
+        # klik na processed label otvorí priečinok s výstupom
+        self.processed_label.bind("<Button-1>", lambda e: self.open_and_select(self.output_path))
+
 
         # --- Hover efekty pre tlačidlá ---
     def on_enter(self, e):

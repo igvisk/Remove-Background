@@ -9,7 +9,7 @@ import subprocess                                               #for multiplatfo
 from tkinterdnd2 import DND_FILES, TkinterDnD                   #drag&drop lib
 
 
-VERSION = "1.1"
+VERSION = "1.2b"
 
 # Model path - Kontrola dostupnosti modelu - vzdy pouziva cache ↓ cache home-folder presmerovany na folder Remote-Background
     # Cesta k lokálnemu modelu - ak sa nenachadza pod models, stiahne ho z githubu (funkcia rembg) do folderu models
@@ -28,7 +28,7 @@ class BackgroundRemoveApp(TkinterDnD.Tk):                   #TkinterDnD - drag&d
         #GUI
         self.title(f"Remove Background v{VERSION}")
         self.resizable(False, False)
-        self.set_window_geometry(670, 400)
+        self.set_window_geometry(660, 445)
 
         # Zistenie absolútnej cesty k priečinku, v ktorom sa nachádza skript
         self.script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -155,24 +155,26 @@ class BackgroundRemoveApp(TkinterDnD.Tk):                   #TkinterDnD - drag&d
         # Widgets
     def create_widgets(self):   
         # Tlačidlo na výber obrázku
-        btn = tk.Button(self, text="Vyber alebo pretiahni obrázok ", command=self.load_image, bg=color_background, fg=color_foreground, font=fonts)
-        btn.pack(pady=10)
+        btn = tk.Button(self, text="Vyber alebo pretiahni obrázok ",
+                        command=self.load_image, 
+                        bg=color_background, fg=color_foreground, font=fonts)
+        btn.pack(pady=20)
 
         # naviazanie hover efektu
         btn.bind("<Enter>", self.on_enter)
         btn.bind("<Leave>", self.on_leave)
 
         # Frame - Rámček na náhľady obrázkov
-        preview_frame = tk.Frame(self, bg= color_background)
-        preview_frame.pack(pady=10)
+        self.preview_frame = tk.Frame(self, bg=color_background)
+        self.preview_frame.pack(pady=0)
 
         # Label - Pôvodný obrázok
-        self.original_label = tk.Label(preview_frame, borderwidth=4, relief="flat", bg= color_background)       #pred nacitanim obrazku su labely bez reliefov / da sa zabezpecit aj vynechanim relief-u
-        self.original_label.pack(side=tk.LEFT, padx=10)
+        self.original_label = tk.Label(self.preview_frame, borderwidth=4, relief="flat", bg= color_background)       #pred nacitanim obrazku su labely bez reliefov / da sa zabezpecit aj vynechanim relief-u
+        self.original_label.pack(side=tk.LEFT, padx=5)
 
         # Label - Upravený obrázok
-        self.processed_label = tk.Label(preview_frame, borderwidth=4, relief="flat", bg= color_background)
-        self.processed_label.pack(side=tk.RIGHT, padx=10)
+        self.processed_label = tk.Label(self.preview_frame, borderwidth=4, relief="flat", bg= color_background)
+        self.processed_label.pack(side=tk.RIGHT, padx=5)
 
         # --- Hover efekty pre tlačidlá ---
     def on_enter(self, e):

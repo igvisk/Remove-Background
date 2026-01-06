@@ -205,7 +205,6 @@ class BackgroundRemoveApp(TkinterDnD.Tk):                   #TkinterDnD - drag&d
         # klik na processed label otvorí priečinok s výstupom
         self.processed_label.bind("<Button-1>", lambda e: self.open_and_select(self.output_path))
 
-
         # --- Hover efekty pre tlačidlá ---
     def on_enter(self, e):
         e.widget['background'] = '#6fa8dc'   # svetlejšia modrá
@@ -219,8 +218,14 @@ class BackgroundRemoveApp(TkinterDnD.Tk):                   #TkinterDnD - drag&d
     def load_image(self):
         file_path = filedialog.askopenfilename(filetypes=[("Obrázky", "*.png *.jpg *.jpeg")])
         if file_path:
-            self.process_file(file_path)
+            # short highlite of all widgets after drop
+            self.highlight("#ec7f1f")       # alt: #6fa8dc 
         
+            # after X ms revert back color
+            self.after(3800, lambda: self.highlight(color_background))
+
+            self.process_file(file_path)
+            
         # Process file
     def process_file(self, file_path):
         try:

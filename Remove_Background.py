@@ -28,7 +28,7 @@ class BackgroundRemoveApp(TkinterDnD.Tk):                   #TkinterDnD - drag&d
         #GUI
         self.title(f"Remove Background v{VERSION}")
         self.resizable(False, False)
-        self.set_window_geometry(660, 430)
+        self.set_window_geometry(660, 415)
 
         # Zistenie absolútnej cesty k priečinku, v ktorom sa nachádza skript
         self.script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -172,7 +172,7 @@ class BackgroundRemoveApp(TkinterDnD.Tk):                   #TkinterDnD - drag&d
         btn = tk.Button(self, text="Vyber alebo pretiahni obrázok ",
                         command=self.load_image, 
                         bg=color_background, fg=color_foreground, font=fonts)
-        btn.pack(pady=20)
+        btn.pack(pady=15)
 
         # naviazanie hover efektu
         btn.bind("<Enter>", self.on_enter)

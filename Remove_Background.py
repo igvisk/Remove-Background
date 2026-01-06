@@ -74,20 +74,8 @@ class BackgroundRemoveApp(TkinterDnD.Tk):                   #TkinterDnD - drag&d
 
     def highlight(self, color):
         self.processed_label.configure(bg=color)
-        
-        # self.preview_frame.configure(bg=color)    # zmeni aj preview bg
-        # popripade zmena bg pre vsetky widgety ↓
-        # # zmení farbu root okna
-        # self.configure(bg=color)
-
-        # # zmení farbu všetkých widgetov, ktoré majú bg
-        # for widget in self.winfo_children():                
-        #     try:
-        #         widget.configure(bg=color)
-        #     except:
-        #       pass
     
-    # po kliknuti na processed label otvori a oznaci subor
+    # po kliknuti na processed label otvori explorer a oznaci subor
     def open_and_select(self, path):
         subprocess.Popen(f'explorer /select,"{path}"')
 
@@ -205,14 +193,39 @@ class BackgroundRemoveApp(TkinterDnD.Tk):                   #TkinterDnD - drag&d
         # klik na processed label otvorí priečinok s výstupom
         self.processed_label.bind("<Button-1>", lambda e: self.open_and_select(self.output_path))
 
+        # Hover pre processed_label
+        self.processed_label.bind("<Enter>", lambda e: self.processed_label.configure(bg="#6fa8dc"))
+        self.processed_label.bind("<Leave>", lambda e: self.processed_label.configure(bg=color_background))
+
         # --- Hover efekty pre tlačidlá ---
     def on_enter(self, e):
-        e.widget['background'] = '#6fa8dc'   # svetlejšia modrá
-        e.widget['foreground'] = '#ffffff'   # biely text
+       e.widget['background'] = '#6fa8dc'   # svetlejšia modrá
+       e.widget['foreground'] = '#ffffff'   # biely text
 
     def on_leave(self, e):
-        e.widget['background'] = '#4a8dc9'   # pôvodná modrá
-        e.widget['foreground'] = '#FFFCF7'   # pôvodná farba textu
+       e.widget['background'] = '#4a8dc9'   # pôvodná modrá
+       e.widget['foreground'] = '#FFFCF7'   # pôvodná farba textu
+
+       
+
+#    def on_enter(self, e):
+#        widget = e.widget
+
+    # ak widget podporuje foreground (má text)
+#        if "foreground" in widget.keys():
+#            widget.configure(background="#6fa8dc", foreground="#ffffff")
+#        else:
+            # image-only label → zmeň len pozadie
+#            widget.configure(bg="#6fa8dc")
+
+ #   def on_leave(self, e):
+ #       widget = e.widget
+
+ #       if "foreground" in widget.keys():
+ #           widget.configure(background=color_background, foreground=color_foreground)
+ #       else:
+ #           widget.configure(background=color_background)
+
         
         # Load file
     def load_image(self):
@@ -225,7 +238,7 @@ class BackgroundRemoveApp(TkinterDnD.Tk):                   #TkinterDnD - drag&d
             self.after(3800, lambda: self.highlight(color_background))
 
             self.process_file(file_path)
-            
+
         # Process file
     def process_file(self, file_path):
         try:
@@ -254,7 +267,7 @@ class BackgroundRemoveApp(TkinterDnD.Tk):                   #TkinterDnD - drag&d
             # Zobraz upravený obrázok
             self.show_preview(self.output_path, self.processed_label)
 
-            messagebox.showinfo("Hotovo", f"Pozadie odstránené!\n\nUložené do:\n{self.output_path}\n\nPre otvorenie lokality súboru stlač Ctrl+O")
+            messagebox.showinfo("Hotovo", f"Pozadie odstránené!\n\nUložené do:\n{self.output_path}\n\nPre otvorenie lokality súboru stlač Ctrl+O alebo klikni na spracovaný obrázok")
         except Exception as e:
             messagebox.showerror("Chyba", f"Nepodarilo sa spracovať obrázok:\n{e}")
 

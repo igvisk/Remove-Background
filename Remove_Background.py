@@ -62,18 +62,21 @@ class BackgroundRemoveApp(TkinterDnD.Tk):                   #TkinterDnD - drag&d
     # Metódy
     # Drag & Drop
     def handle_drop(self, event):
-        # short highlite of all widgets after drop
-        self.highlight("#6fa8dc")       # alt: #6fa8dc ; #ffed4a -yell pastel; #4dc0b5
-        
-        # after X ms revert back color
-        self.after(3800, lambda: self.highlight(color_background))
+        # fade effect animation
+        self.animate_bg(
+        self.processed_label,
+        start=(74, 141, 201),
+        end=(111, 168, 220)
+        )
+        self.after(300, lambda: self.animate_bg(
+        self.processed_label,
+        start=(111, 168, 220),
+        end=(74, 141, 201)
+        ))
         
         file_path = event.data.strip("{}")          #odstráni {} ak sú vo Windows
         if os.path.isfile(file_path):
             self.process_file(file_path)
-
-    def highlight(self, color):
-        self.processed_label.configure(bg=color)
     
     # po kliknuti na processed label otvori explorer a oznaci subor
     def open_and_select(self, path):
@@ -189,7 +192,7 @@ class BackgroundRemoveApp(TkinterDnD.Tk):                   #TkinterDnD - drag&d
         self.original_label.pack(side=tk.LEFT, padx=5)
 
         # Label - Upravený obrázok
-        self.processed_label = tk.Label(self.preview_frame, borderwidth=4, relief="flat", bg= color_background)
+        self.processed_label = tk.Label(self.preview_frame, borderwidth=4, relief="flat", bg= color_background, cursor="trek")
         self.processed_label.pack(side=tk.RIGHT, padx=5)
 
         # klik na processed label otvorí priečinok s výstupom
@@ -208,8 +211,6 @@ class BackgroundRemoveApp(TkinterDnD.Tk):                   #TkinterDnD - drag&d
                 )
         )
 
-
-
         # --- Hover efekty pre tlačidlá ---
     def on_enter(self, e):
         self.animate_bg(
@@ -219,7 +220,6 @@ class BackgroundRemoveApp(TkinterDnD.Tk):                   #TkinterDnD - drag&d
         )
         e.widget['foreground'] = '#ffffff'
 
-
     def on_leave(self, e):
         self.animate_bg(
         e.widget,
@@ -228,7 +228,7 @@ class BackgroundRemoveApp(TkinterDnD.Tk):                   #TkinterDnD - drag&d
         )
         e.widget['foreground'] = '#FFFCF7'
 
-        #Fade effect
+        #Fade effect - setting for animation speed - steps & time
     def animate_bg(self, widget, start, end, steps=10, step=0):
         # start/end sú RGB tuple, napr. (74, 141, 201)
         if step > steps:
@@ -241,18 +241,25 @@ class BackgroundRemoveApp(TkinterDnD.Tk):                   #TkinterDnD - drag&d
         color = f"#{r:02x}{g:02x}{b:02x}"
         widget.configure(bg=color)
 
-        widget.after(35, lambda: self.animate_bg(widget, start, end, steps, step + 1))      #fade effect time
+        widget.after(35, lambda: self.animate_bg(widget, start, end, steps, step + 1))      #fade effect time widget.after(time of step, )
     
         # Load file
     def load_image(self):
         file_path = filedialog.askopenfilename(filetypes=[("Obrázky", "*.png *.jpg *.jpeg")])
         if file_path:
-            # short highlight of all widgets after drop
-            self.highlight("#6fa8dc")       # alt: #6fa8dc ; #ec7f1f-
-        
-            # after X ms revert back color
-            self.after(3800, lambda: self.highlight(color_background))
+            # animovaný fade effect processed_label
+            self.animate_bg(
+                self.processed_label,
+                start=(74, 141, 201),   # pôvodná farba #4a8dc9
+                end=(111, 168, 220)     # hover farba #6fa8dc
+            )
 
+            self.after(300, lambda: self.animate_bg(
+                self.processed_label,
+                start=(111, 168, 220),
+                end=(74, 141, 201)
+            ))
+            
             self.process_file(file_path)
 
         # Process file
@@ -282,8 +289,24 @@ class BackgroundRemoveApp(TkinterDnD.Tk):                   #TkinterDnD - drag&d
 
             # Zobraz upravený obrázok
             self.show_preview(self.output_path, self.processed_label)
+
             # Message window after successful image processing - hidden for now (annoying)
             # messagebox.showinfo("Hotovo", f"Pozadie odstránené!\n\nUložené do:\n{self.output_path}\n\nPre otvorenie lokality súboru stlač Ctrl+O alebo klikni na spracovaný obrázok")
+
+            # jemné dvojité bliknutie processed_label, zmena steps=rychlost animacie 8-blikanie, 30-pomalsie
+            self.animate_bg(
+                self.processed_label,
+                start=(74, 141, 201),   # pôvodná farba #4a8dc9
+                end=(111, 168, 220),     # highlight farba #6fa8dc
+                steps=30
+            )
+
+            self.after(900, lambda: self.animate_bg(            #time if steps are 10 - 250ms, if steps=30 -> 900ms
+                self.processed_label,
+                start=(111, 168, 220),
+                end=(74, 141, 201),
+                steps=30
+            ))
 
         except Exception as e:
             messagebox.showerror("Chyba", f"Nepodarilo sa spracovať obrázok:\n{e}")

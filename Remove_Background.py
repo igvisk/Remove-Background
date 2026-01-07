@@ -196,13 +196,22 @@ class BackgroundRemoveApp(TkinterDnD.Tk):                   #TkinterDnD - drag&d
         self.processed_label.bind("<Button-1>", lambda e: self.open_and_select(self.output_path))
 
         # Hover pre processed_label
-        self.processed_label.bind("<Enter>", lambda e: self.processed_label.configure(bg="#6fa8dc"))
-        self.processed_label.bind("<Leave>", lambda e: self.processed_label.configure(bg=color_background))
+        self.processed_label.bind("<Enter>", lambda e: self.animate_bg(self.processed_label, 
+            start=(74, 141, 201),   # #4a8dc9
+            end=(111, 168, 220)     # #6fa8dc
+            )
+        )
+
+        self.processed_label.bind("<Leave>", lambda e: self.animate_bg(self.processed_label,
+                start=(111, 168, 220),
+                end=(74, 141, 201)
+                )
+        )
+
+
 
         # --- Hover efekty pre tlačidlá ---
     def on_enter(self, e):
-    #    e.widget['background'] = '#6fa8dc'   # svetlejšia modrá
-    #    e.widget['foreground'] = '#ffffff'   # biely text
         self.animate_bg(
         e.widget,
         start=(74, 141, 201),   # pôvodná farba #4a8dc9
@@ -212,8 +221,6 @@ class BackgroundRemoveApp(TkinterDnD.Tk):                   #TkinterDnD - drag&d
 
 
     def on_leave(self, e):
-    #    e.widget['background'] = '#4a8dc9'   # pôvodná modrá
-    #    e.widget['foreground'] = '#FFFCF7'   # pôvodná farba textu
         self.animate_bg(
         e.widget,
         start=(111, 168, 220),
@@ -221,8 +228,9 @@ class BackgroundRemoveApp(TkinterDnD.Tk):                   #TkinterDnD - drag&d
         )
         e.widget['foreground'] = '#FFFCF7'
 
+        #Fade effect
     def animate_bg(self, widget, start, end, steps=10, step=0):
-    # start/end sú RGB tuple, napr. (74, 141, 201)
+        # start/end sú RGB tuple, napr. (74, 141, 201)
         if step > steps:
             return
 
@@ -239,7 +247,7 @@ class BackgroundRemoveApp(TkinterDnD.Tk):                   #TkinterDnD - drag&d
     def load_image(self):
         file_path = filedialog.askopenfilename(filetypes=[("Obrázky", "*.png *.jpg *.jpeg")])
         if file_path:
-            # short highlite of all widgets after drop
+            # short highlight of all widgets after drop
             self.highlight("#6fa8dc")       # alt: #6fa8dc ; #ec7f1f-
         
             # after X ms revert back color

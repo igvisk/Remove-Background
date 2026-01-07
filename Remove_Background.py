@@ -63,7 +63,7 @@ class BackgroundRemoveApp(TkinterDnD.Tk):                   #TkinterDnD - drag&d
     # Drag & Drop
     def handle_drop(self, event):
         # short highlite of all widgets after drop
-        self.highlight("#ec7f1f")       # alt: #6fa8dc 
+        self.highlight("#6fa8dc")       # alt: #6fa8dc ; #ffed4a -yell pastel; #4dc0b5
         
         # after X ms revert back color
         self.after(3800, lambda: self.highlight(color_background))
@@ -78,7 +78,6 @@ class BackgroundRemoveApp(TkinterDnD.Tk):                   #TkinterDnD - drag&d
     # po kliknuti na processed label otvori explorer a oznaci subor
     def open_and_select(self, path):
         subprocess.Popen(f'explorer /select,"{path}"')
-
 
     # --- Menu ---
     def create_menu(self):
@@ -169,10 +168,13 @@ class BackgroundRemoveApp(TkinterDnD.Tk):                   #TkinterDnD - drag&d
         # Widgets
     def create_widgets(self):   
         # Tlačidlo na výber obrázku
-        btn = tk.Button(self, text="Vyber alebo pretiahni obrázok ",
+        btn = tk.Button(self, text="Vybrať alebo presunúť obrázok",
                         command=self.load_image, 
-                        bg=color_background, fg=color_foreground, font=fonts)
-        btn.pack(pady=15)
+                        bg=color_background, 
+                        fg=color_foreground, 
+                        font=fonts,
+                        cursor="trek")      # sailboat if blue bg
+        btn.pack(pady=15, padx=5, fill="x")
 
         # naviazanie hover efektu
         btn.bind("<Enter>", self.on_enter)
@@ -199,40 +201,46 @@ class BackgroundRemoveApp(TkinterDnD.Tk):                   #TkinterDnD - drag&d
 
         # --- Hover efekty pre tlačidlá ---
     def on_enter(self, e):
-       e.widget['background'] = '#6fa8dc'   # svetlejšia modrá
-       e.widget['foreground'] = '#ffffff'   # biely text
+    #    e.widget['background'] = '#6fa8dc'   # svetlejšia modrá
+    #    e.widget['foreground'] = '#ffffff'   # biely text
+        self.animate_bg(
+        e.widget,
+        start=(74, 141, 201),   # pôvodná farba #4a8dc9
+        end=(111, 168, 220)     # hover farba #6fa8dc
+        )
+        e.widget['foreground'] = '#ffffff'
+
 
     def on_leave(self, e):
-       e.widget['background'] = '#4a8dc9'   # pôvodná modrá
-       e.widget['foreground'] = '#FFFCF7'   # pôvodná farba textu
+    #    e.widget['background'] = '#4a8dc9'   # pôvodná modrá
+    #    e.widget['foreground'] = '#FFFCF7'   # pôvodná farba textu
+        self.animate_bg(
+        e.widget,
+        start=(111, 168, 220),
+        end=(74, 141, 201)
+        )
+        e.widget['foreground'] = '#FFFCF7'
 
-       
+    def animate_bg(self, widget, start, end, steps=10, step=0):
+    # start/end sú RGB tuple, napr. (74, 141, 201)
+        if step > steps:
+            return
 
-#    def on_enter(self, e):
-#        widget = e.widget
+        r = int(start[0] + (end[0] - start[0]) * (step / steps))
+        g = int(start[1] + (end[1] - start[1]) * (step / steps))
+        b = int(start[2] + (end[2] - start[2]) * (step / steps))
 
-    # ak widget podporuje foreground (má text)
-#        if "foreground" in widget.keys():
-#            widget.configure(background="#6fa8dc", foreground="#ffffff")
-#        else:
-            # image-only label → zmeň len pozadie
-#            widget.configure(bg="#6fa8dc")
+        color = f"#{r:02x}{g:02x}{b:02x}"
+        widget.configure(bg=color)
 
- #   def on_leave(self, e):
- #       widget = e.widget
-
- #       if "foreground" in widget.keys():
- #           widget.configure(background=color_background, foreground=color_foreground)
- #       else:
- #           widget.configure(background=color_background)
-
-        
+        widget.after(35, lambda: self.animate_bg(widget, start, end, steps, step + 1))      #fade effect time
+    
         # Load file
     def load_image(self):
         file_path = filedialog.askopenfilename(filetypes=[("Obrázky", "*.png *.jpg *.jpeg")])
         if file_path:
             # short highlite of all widgets after drop
-            self.highlight("#ec7f1f")       # alt: #6fa8dc 
+            self.highlight("#6fa8dc")       # alt: #6fa8dc ; #ec7f1f-
         
             # after X ms revert back color
             self.after(3800, lambda: self.highlight(color_background))

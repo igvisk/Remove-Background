@@ -266,8 +266,9 @@ class BackgroundRemoveApp(TkinterDnD.Tk):                   #TkinterDnD - drag&d
 
             # Zobraz upravený obrázok
             self.show_preview(self.output_path, self.processed_label)
+            # Message window after successful image processing - hidden for now (annoying)
+            # messagebox.showinfo("Hotovo", f"Pozadie odstránené!\n\nUložené do:\n{self.output_path}\n\nPre otvorenie lokality súboru stlač Ctrl+O alebo klikni na spracovaný obrázok")
 
-            messagebox.showinfo("Hotovo", f"Pozadie odstránené!\n\nUložené do:\n{self.output_path}\n\nPre otvorenie lokality súboru stlač Ctrl+O alebo klikni na spracovaný obrázok")
         except Exception as e:
             messagebox.showerror("Chyba", f"Nepodarilo sa spracovať obrázok:\n{e}")
 

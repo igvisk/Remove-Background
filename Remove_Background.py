@@ -228,7 +228,7 @@ class BackgroundRemoveApp(TkinterDnD.Tk):                   #TkinterDnD - drag&d
         )
         e.widget['foreground'] = '#FFFCF7'
 
-        #Fade effect - setting for animation speed - steps & time
+        # Universal background color animation (used for hover + highlight) -- #time if steps are 10 - 250ms, if steps=30 -> 900ms
     def animate_bg(self, widget, start, end, steps=10, step=0):
         # start/end sú RGB tuple, napr. (74, 141, 201)
         if step > steps:
@@ -293,19 +293,37 @@ class BackgroundRemoveApp(TkinterDnD.Tk):                   #TkinterDnD - drag&d
             # Message window after successful image processing - hidden for now (annoying)
             # messagebox.showinfo("Hotovo", f"Pozadie odstránené!\n\nUložené do:\n{self.output_path}\n\nPre otvorenie lokality súboru stlač Ctrl+O alebo klikni na spracovaný obrázok")
 
-            # jemné dvojité bliknutie processed_label, zmena steps=rychlost animacie 8-blikanie, 30-pomalsie
+            # --- Jemný pulz processed_label po spracovaní obrázka (2x) ---
+            # 1. pulz – zosvetlenie
             self.animate_bg(
                 self.processed_label,
-                start=(74, 141, 201),   # pôvodná farba #4a8dc9
-                end=(111, 168, 220),     # highlight farba #6fa8dc
-                steps=30
+                start=(74, 141, 201),
+                end=(111, 168, 220),
+                steps=25
             )
 
-            self.after(900, lambda: self.animate_bg(            #time if steps are 10 - 250ms, if steps=30 -> 900ms
+            # 1. pulz – návrat
+            self.after(700, lambda: self.animate_bg(
                 self.processed_label,
                 start=(111, 168, 220),
                 end=(74, 141, 201),
-                steps=30
+                steps=25
+            ))
+
+            # 2. pulz – zosvetlenie
+            self.after(1400, lambda: self.animate_bg(
+                self.processed_label,
+                start=(74, 141, 201),
+                end=(111, 168, 220),
+                steps=25
+            ))
+
+            # 2. pulz – návrat
+            self.after(2100, lambda: self.animate_bg(
+                self.processed_label,
+                start=(111, 168, 220),
+                end=(74, 141, 201),
+                steps=25
             ))
 
         except Exception as e:

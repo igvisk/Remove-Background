@@ -65,8 +65,8 @@ class BackgroundRemoveApp(TkinterDnD.Tk):                   #TkinterDnD - drag&d
         self.bind("<Control-q>", lambda e: self.quit_app())
         self.bind("<F1>", lambda e: self.show_about())
 
-        # Cas animacie btn
-        self.button_anim_stop_delay = 1200   # ms – môžeš si meniť
+        # Čas animácie btn
+        self.button_anim_stop_delay = 2800   # ms – ako dlho bude bežať animácia
 
     # Metódy
         # Funkcia na spustenie animacie
@@ -87,7 +87,7 @@ class BackgroundRemoveApp(TkinterDnD.Tk):                   #TkinterDnD - drag&d
         self.children['!button'].config(text=f"Spracovávam {frame}")      # ?children -> je to prvý a jediný Button v okne → bezpečné
 
             # rýchlosť animácie
-        self.after(25, self.animate_button_ascii)      #rychlost animacie - 50ms
+        self.after(25, self.animate_button_ascii)      #rychlost animacie - 25ms
         
         # Funkcia na zastavenie animacie tlacidla
     def stop_button_animation(self):
@@ -403,7 +403,6 @@ class BackgroundRemoveApp(TkinterDnD.Tk):                   #TkinterDnD - drag&d
         tk_image = ImageTk.PhotoImage(image)
         target_label.image = tk_image                                            #Ulozenie referencie na obrazok do atributu labelu, inak by sa vymazal
         target_label.config(image=tk_image, relief="raised", borderwidth=4)      #tkinter relief options: ridge, groove, raised, sunken, flat(none)
-
 
 if __name__ == "__main__":
     app = BackgroundRemoveApp()

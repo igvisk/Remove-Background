@@ -49,6 +49,12 @@ class BackgroundRemoveApp(TkinterDnD.Tk):                   #TkinterDnD - drag&d
         # Widgety
         self.create_widgets()
 
+        # --- ASCII animácia tlačidla ---
+        self.btn_anim_running = False
+        self.btn_anim_step = 0
+        self.btn_anim_frames = ["|", "/", "-", "\\"]
+
+
         # Drag & Drop registrácia
         self.drop_target_register(DND_FILES)
         self.dnd_bind("<<Drop>>", self.handle_drop)
@@ -59,8 +65,40 @@ class BackgroundRemoveApp(TkinterDnD.Tk):                   #TkinterDnD - drag&d
         self.bind("<Control-q>", lambda e: self.quit_app())
         self.bind("<F1>", lambda e: self.show_about())
 
+        # Cas animacie btn
+        self.button_anim_stop_delay = 1200   # ms – môžeš si meniť
+
     # Metódy
-    # Drag & Drop
+        # Funkcia na spustenie animacie
+    def start_button_animation(self):
+        self.btn_anim_running = True
+        self.btn_anim_step = 0
+        self.animate_button_ascii()
+
+        # ASCI animacia tlacidla
+    def animate_button_ascii(self):
+        if not self.btn_anim_running:
+            return
+
+        frame = self.btn_anim_frames[self.btn_anim_step % len(self.btn_anim_frames)]
+        self.btn_anim_step += 1
+
+            # prepíš text tlačidla
+        self.children['!button'].config(text=f"Spracovávam {frame}")      # ?children -> je to prvý a jediný Button v okne → bezpečné
+
+            # rýchlosť animácie
+        self.after(25, self.animate_button_ascii)      #rychlost animacie - 50ms
+        
+        # Funkcia na zastavenie animacie tlacidla
+    def stop_button_animation(self):
+        self.after(self.button_anim_stop_delay, self._stop_button_animation_now)
+    
+    def _stop_button_animation_now(self):
+        self.btn_anim_running = False
+        self.children['!button'].config(text="Vybrať alebo presunúť obrázok")
+
+
+        # Drag & Drop
     def handle_drop(self, event):
         # fade effect animation
         self.animate_bg(
@@ -76,13 +114,14 @@ class BackgroundRemoveApp(TkinterDnD.Tk):                   #TkinterDnD - drag&d
         
         file_path = event.data.strip("{}")          #odstráni {} ak sú vo Windows
         if os.path.isfile(file_path):
-            self.process_file(file_path)
+            self.start_button_animation()
+            self.after(10, lambda: self.process_file(file_path))    #povodne self.process_file(file_path)
     
-    # po kliknuti na processed label otvori explorer a oznaci subor
+        # po kliknuti na processed label otvori explorer a oznaci subor
     def open_and_select(self, path):
         subprocess.Popen(f'explorer /select,"{path}"')
 
-    # --- Menu ---
+        # --- Menu ---
     def create_menu(self):
         menu_bar = Menu(self)
         self.config(menu=menu_bar)
@@ -247,6 +286,9 @@ class BackgroundRemoveApp(TkinterDnD.Tk):                   #TkinterDnD - drag&d
     def load_image(self):
         file_path = filedialog.askopenfilename(filetypes=[("Obrázky", "*.png *.jpg *.jpeg")])
         if file_path:
+            # animacia tlacidla
+            self.start_button_animation()
+
             # animovaný fade effect processed_label
             self.animate_bg(
                 self.processed_label,
@@ -260,7 +302,7 @@ class BackgroundRemoveApp(TkinterDnD.Tk):                   #TkinterDnD - drag&d
                 end=(74, 141, 201)
             ))
             
-            self.process_file(file_path)
+            self.after(10, lambda: self.process_file(file_path))    #povodne: self.process_file(file_path)
 
         # Process file
     def process_file(self, file_path):
@@ -325,6 +367,10 @@ class BackgroundRemoveApp(TkinterDnD.Tk):                   #TkinterDnD - drag&d
                 end=(74, 141, 201),
                 steps=25
             ))
+
+            # Zastavenie animacie buttonu
+            self.stop_button_animation()
+
 
         except Exception as e:
             messagebox.showerror("Chyba", f"Nepodarilo sa spracovať obrázok:\n{e}")

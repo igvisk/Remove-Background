@@ -9,7 +9,7 @@ import subprocess                                               #for multiplatfo
 from tkinterdnd2 import DND_FILES, TkinterDnD                   #drag&drop lib
 
 
-VERSION = "1.2b"
+VERSION = "1.2"
 
 # Model path - Kontrola dostupnosti modelu - vzdy pouziva cache ↓ cache home-folder presmerovany na folder Remote-Background
     # Cesta k lokálnemu modelu - ak sa nenachadza pod models, stiahne ho z githubu (funkcia rembg) do folderu models
@@ -54,7 +54,6 @@ class BackgroundRemoveApp(TkinterDnD.Tk):                   #TkinterDnD - drag&d
         self.btn_anim_step = 0
         self.btn_anim_frames = ["|", "/", "-", "\\"]
 
-
         # Drag & Drop registrácia
         self.drop_target_register(DND_FILES)
         self.dnd_bind("<<Drop>>", self.handle_drop)
@@ -74,6 +73,7 @@ class BackgroundRemoveApp(TkinterDnD.Tk):                   #TkinterDnD - drag&d
         self.btn_anim_running = True
         self.btn_anim_step = 0
         self.animate_button_ascii()
+        # self.update_idletasks()   # okamžité prekreslenie GUI
 
         # ASCI animacia tlacidla
     def animate_button_ascii(self):
@@ -87,7 +87,7 @@ class BackgroundRemoveApp(TkinterDnD.Tk):                   #TkinterDnD - drag&d
         self.children['!button'].config(text=f"Spracovávam {frame}")      # ?children -> je to prvý a jediný Button v okne → bezpečné
 
             # rýchlosť animácie
-        self.after(25, self.animate_button_ascii)      #rychlost animacie - 25ms
+        self.after(25, self.animate_button_ascii)                          #!rychlost animacie ascii - 25ms
         
         # Funkcia na zastavenie animacie tlacidla
     def stop_button_animation(self):
@@ -96,7 +96,6 @@ class BackgroundRemoveApp(TkinterDnD.Tk):                   #TkinterDnD - drag&d
     def _stop_button_animation_now(self):
         self.btn_anim_running = False
         self.children['!button'].config(text="Vybrať alebo presunúť obrázok")
-
 
         # Drag & Drop
     def handle_drop(self, event):
@@ -112,7 +111,7 @@ class BackgroundRemoveApp(TkinterDnD.Tk):                   #TkinterDnD - drag&d
         end=(74, 141, 201)
         ))
         
-        file_path = event.data.strip("{}")          #odstráni {} ak sú vo Windows
+        file_path = event.data.strip("{}")                          #odstráni {} ak sú vo Windows - win pridáva do cesty k súboru {} pri drag & drop
         if os.path.isfile(file_path):
             self.start_button_animation()
             self.after(10, lambda: self.process_file(file_path))    #povodne self.process_file(file_path)
@@ -189,7 +188,7 @@ class BackgroundRemoveApp(TkinterDnD.Tk):                   #TkinterDnD - drag&d
         about_window.bind("<Escape>", lambda e: about_window.destroy())
 
     #Metody (set window geometry. widgets, load_image, show_preview):
-    
+        
         # Window geometry - Open app in the center of the screen         
     def set_window_geometry(self, width, height, window=None):       
         
@@ -227,7 +226,7 @@ class BackgroundRemoveApp(TkinterDnD.Tk):                   #TkinterDnD - drag&d
         self.preview_frame.pack(pady=0)
 
         # Label - Pôvodný obrázok
-        self.original_label = tk.Label(self.preview_frame, borderwidth=4, relief="flat", bg= color_background)       #pred nacitanim obrazku su labely bez reliefov / da sa zabezpecit aj vynechanim relief-u
+        self.original_label = tk.Label(self.preview_frame, borderwidth=4, relief="flat", bg= color_background)                  #pred načítaním obrázku sú labely bez reliefov / dá sa zabezpeciť aj vynechaním reliéf-u
         self.original_label.pack(side=tk.LEFT, padx=5)
 
         # Label - Upravený obrázok
@@ -254,8 +253,8 @@ class BackgroundRemoveApp(TkinterDnD.Tk):                   #TkinterDnD - drag&d
     def on_enter(self, e):
         self.animate_bg(
         e.widget,
-        start=(74, 141, 201),   # pôvodná farba #4a8dc9
-        end=(111, 168, 220)     # hover farba #6fa8dc
+        start=(74, 141, 201),       # pôvodná farba #4a8dc9
+        end=(111, 168, 220)         # hover farba #6fa8dc
         )
         e.widget['foreground'] = '#ffffff'
 
@@ -280,7 +279,7 @@ class BackgroundRemoveApp(TkinterDnD.Tk):                   #TkinterDnD - drag&d
         color = f"#{r:02x}{g:02x}{b:02x}"
         widget.configure(bg=color)
 
-        widget.after(35, lambda: self.animate_bg(widget, start, end, steps, step + 1))      #fade effect time widget.after(time of step, )
+        widget.after(35, lambda: self.animate_bg(widget, start, end, steps, step + 1))          #fade effect time widget.after(time of step, ...)
     
         # Load file
     def load_image(self):

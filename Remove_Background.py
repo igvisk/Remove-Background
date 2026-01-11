@@ -74,8 +74,8 @@ class BackgroundRemoveApp(TkinterDnD.Tk):                   #TkinterDnD - drag&d
         #GUI
         self.title(f"Remove Background v{VERSION}")
         self.resizable(False, False)
-        self.set_window_geometry(660, 415)
-
+        self.set_window_geometry(660, 410)          # 660x415
+   
         # Zistenie absolútnej cesty k priečinku, v ktorom sa nachádza skript
         self.script_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -125,7 +125,7 @@ class BackgroundRemoveApp(TkinterDnD.Tk):                   #TkinterDnD - drag&d
     
     def apply_language(self):
         lang = LANGUAGES[self.current_lang]
-
+      
         # rebuild menu
         self.create_menu()
 
@@ -137,7 +137,7 @@ class BackgroundRemoveApp(TkinterDnD.Tk):                   #TkinterDnD - drag&d
         self.btn_anim_running = True
         self.btn_anim_step = 0
         self.animate_button_ascii()
-        # self.update_idletasks()   # okamžité prekreslenie GUI
+        
 
         # ASCI animacia tlacidla
     def animate_button_ascii(self):
@@ -149,7 +149,7 @@ class BackgroundRemoveApp(TkinterDnD.Tk):                   #TkinterDnD - drag&d
 
             # prepíš text tlačidla
         lang = LANGUAGES[self.current_lang]
-        self.select_btn.config(text=f"{lang['btn_processing']} {frame}")   # ?children -> je to prvý a jediný Button v okne → bezpečné
+        self.select_btn.config(text=f"{lang['btn_processing']} {frame}")  
 
             # rýchlosť animácie
         self.after(25, self.animate_button_ascii)                          #!rychlost animacie ascii - 25ms
@@ -211,7 +211,6 @@ class BackgroundRemoveApp(TkinterDnD.Tk):                   #TkinterDnD - drag&d
 
         # -. Spacer (push Help to the right)
         self.menu_bar.add_cascade(label=" " * 167)
-
 
         # 3. Help
         self.help_menu = Menu(self.menu_bar, tearoff=0)

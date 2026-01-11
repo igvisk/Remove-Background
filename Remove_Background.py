@@ -11,6 +11,52 @@ from tkinterdnd2 import DND_FILES, TkinterDnD                   #drag&drop lib
 
 VERSION = "1.2"
 
+LANGUAGES = {
+    "sk": {
+        "menu_file": "Súbor",
+        "menu_open": "Otvor súbor  Ctrl+N",
+        "menu_output": "Výstupy         Ctrl+O",
+        "menu_exit": "Ukončiť         Ctrl+Q",
+        "menu_help": "Pomoc",
+        "menu_about": "O programe   F1",
+        "menu_language": "Jazyk",
+        "btn_select": "Vybrať alebo presunúť obrázok",
+        "btn_processing": "Spracovávam",
+        "about_title": "O programe",
+        "about_text": (
+            "Aplikácia: Remove Background\n"
+            f"Verzia: {VERSION}\n\n"
+            "Autor: Igor Vitovský\n"
+            "GitHub: github.com/igvisk\n\n"
+            "Aplikácia využíva AI model U²Net\n"
+            "na presné odstránenie pozadia.\n"
+            "Všetko spracovanie prebieha offline."
+        )
+    },
+
+    "en": {
+        "menu_file": "File",
+        "menu_open": "Open file  Ctrl+N",
+        "menu_output": "Outputs    Ctrl+O",
+        "menu_exit": "Exit            Ctrl+Q",
+        "menu_help": "Help",
+        "menu_about": "About   F1",
+        "menu_language": "Language",
+        "btn_select": "Select or drop an image",
+        "btn_processing": "Processing",
+        "about_title": "About",
+        "about_text": (
+            "Application: Remove Background\n"
+            f"Version: {VERSION}\n\n"
+            "Author: Igor Vitovský\n"
+            "GitHub: github.com/igvisk\n\n"
+            "This application uses the U²Net AI model\n"
+            "for accurate background removal.\n"
+            "All processing is done offline."
+        )
+    }
+}
+
 # Model path - Kontrola dostupnosti modelu - vzdy pouziva cache ↓ cache home-folder presmerovany na folder Remote-Background
     # Cesta k lokálnemu modelu - ak sa nenachadza pod models, stiahne ho z githubu (funkcia rembg) do folderu models
 os.environ["U2NET_HOME"] = os.path.join(os.path.dirname(__file__), "models")
@@ -40,6 +86,9 @@ class BackgroundRemoveApp(TkinterDnD.Tk):                   #TkinterDnD - drag&d
         except Exception as e:
              messagebox.showwarning("Upozornenie", f"Ikona sa nepodarila načítať:\n{e}")
         
+        # Actual language
+        self.current_lang = "sk"
+
         # Background color
         self.configure(bg= color_background)
 
@@ -58,16 +107,31 @@ class BackgroundRemoveApp(TkinterDnD.Tk):                   #TkinterDnD - drag&d
         self.drop_target_register(DND_FILES)
         self.dnd_bind("<<Drop>>", self.handle_drop)
 
-        # klávesové skratky
+        # Klávesové skratky
         self.bind("<Control-n>", lambda e: self.load_image())
         self.bind("<Control-o>", lambda e: self.show_output_folder())
         self.bind("<Control-q>", lambda e: self.quit_app())
         self.bind("<F1>", lambda e: self.show_about())
+        self.bind("<Control-l>", self.toggle_language)
 
         # Čas animácie btn
         self.button_anim_stop_delay = 2800   # ms – ako dlho bude bežať animácia
 
     # Metódy
+        # Language
+    def toggle_language(self, event=None):
+        self.current_lang = "en" if self.current_lang == "sk" else "sk"
+        self.apply_language()
+    
+    def apply_language(self):
+        lang = LANGUAGES[self.current_lang]
+
+        # rebuild menu
+        self.create_menu()
+
+        # update button text
+        self.select_btn.config(text=lang["btn_select"])
+
         # Funkcia na spustenie animacie
     def start_button_animation(self):
         self.btn_anim_running = True
@@ -84,7 +148,8 @@ class BackgroundRemoveApp(TkinterDnD.Tk):                   #TkinterDnD - drag&d
         self.btn_anim_step += 1
 
             # prepíš text tlačidla
-        self.children['!button'].config(text=f"Spracovávam {frame}")      # ?children -> je to prvý a jediný Button v okne → bezpečné
+        lang = LANGUAGES[self.current_lang]
+        self.select_btn.config(text=f"{lang['btn_processing']} {frame}")   # ?children -> je to prvý a jediný Button v okne → bezpečné
 
             # rýchlosť animácie
         self.after(25, self.animate_button_ascii)                          #!rychlost animacie ascii - 25ms
@@ -95,7 +160,8 @@ class BackgroundRemoveApp(TkinterDnD.Tk):                   #TkinterDnD - drag&d
     
     def _stop_button_animation_now(self):
         self.btn_anim_running = False
-        self.children['!button'].config(text="Vybrať alebo presunúť obrázok")
+        lang = LANGUAGES[self.current_lang]
+        self.select_btn.config(text=lang["btn_select"])
 
         # Drag & Drop
     def handle_drop(self, event):
@@ -122,21 +188,35 @@ class BackgroundRemoveApp(TkinterDnD.Tk):                   #TkinterDnD - drag&d
 
         # --- Menu ---
     def create_menu(self):
-        menu_bar = Menu(self)
-        self.config(menu=menu_bar)
+        lang = LANGUAGES[self.current_lang]
+
+        self.menu_bar = Menu(self)
+        self.config(menu=self.menu_bar)
 
         # 1. File
-        file_menu = Menu(menu_bar, tearoff=0)
-        file_menu.add_command(label="Otvor súbor  Ctrl+N", command=self.load_image)
-        file_menu.add_command(label="Výstupy         Ctrl+O", command=self.show_output_folder)
-        file_menu.add_separator()
-        file_menu.add_command(label="Ukončiť         Ctrl+Q", command=self.quit_app)
-        menu_bar.add_cascade(label="Súbor", menu=file_menu)
-        
-        # 2. Help
-        help_menu = Menu(menu_bar, tearoff=0)
-        help_menu.add_command(label="O programe   F1", command=self.show_about)
-        menu_bar.add_cascade(label="Pomoc", menu=help_menu)
+        self.file_menu = Menu(self.menu_bar, tearoff=0)
+        self.file_menu.add_command(label=lang["menu_open"], command=self.load_image)
+        self.file_menu.add_command(label=lang["menu_output"], command=self.show_output_folder)
+        self.file_menu.add_separator()
+        self.file_menu.add_command(label=lang["menu_exit"], command=self.quit_app)
+        self.menu_bar.add_cascade(label=lang["menu_file"], menu=self.file_menu)
+
+        # 2. Language
+        self.language_menu = Menu(self.menu_bar, tearoff=0)
+        self.language_menu.add_command(
+            label="Slovensky / English   Ctrl+L",
+            command=self.toggle_language
+        )
+        self.menu_bar.add_cascade(label=lang["menu_language"], menu=self.language_menu)
+
+        # -. Spacer (push Help to the right)
+        self.menu_bar.add_cascade(label=" " * 167)
+
+
+        # 3. Help
+        self.help_menu = Menu(self.menu_bar, tearoff=0)
+        self.help_menu.add_command(label=lang["menu_about"], command=self.show_about)
+        self.menu_bar.add_cascade(label=lang["menu_help"], menu=self.help_menu)
 
     # Funkcie menu
     def show_output_folder(self):
@@ -159,8 +239,9 @@ class BackgroundRemoveApp(TkinterDnD.Tk):                   #TkinterDnD - drag&d
 
     # About window
     def show_about(self):
+        lang = LANGUAGES[self.current_lang]
         about_window = tk.Toplevel(self)
-        about_window.title("About")
+        about_window.title(lang["about_title"])
         about_window.resizable(False, False)
         about_window.configure(bg=color_background)
 
@@ -172,15 +253,7 @@ class BackgroundRemoveApp(TkinterDnD.Tk):                   #TkinterDnD - drag&d
         if os.path.exists(icon_path):
             about_window.iconbitmap(icon_path)   # Windows (.ico)
 
-        text = (
-                "Aplikácia: Remove Background\n"
-                f"Verzia: {VERSION}\n\n"
-                "Autor: Igor Vitovský\n"
-                "GitHub: github.com/igvisk\n\n"
-                "Aplikácia využíva AI model U²Net\n"
-                "na presné odstránenie pozadia.\n"
-                "Všetko spracovanie prebieha offline."
-        )
+        text = lang["about_text"]
 
         about_label = Label(about_window, text=text, font= fonts, justify="left", bg= color_background, fg= color_foreground)
         about_label.pack(padx=20, pady=20)
@@ -207,19 +280,20 @@ class BackgroundRemoveApp(TkinterDnD.Tk):                   #TkinterDnD - drag&d
         window.geometry(f"{width}x{height}+{x}+{y}")
 
         # Widgets
-    def create_widgets(self):   
-        # Tlačidlo na výber obrázku
-        btn = tk.Button(self, text="Vybrať alebo presunúť obrázok",
-                        command=self.load_image, 
-                        bg=color_background, 
-                        fg=color_foreground, 
-                        font=fonts,
-                        cursor="trek")      # sailboat if blue bg
-        btn.pack(pady=15, padx=5, fill="x")
+    def create_widgets(self):          
+        self.select_btn = tk.Button(
+        self,
+        text=LANGUAGES[self.current_lang]["btn_select"],
+        command=self.load_image,
+        bg=color_background,
+        fg=color_foreground,
+        font=fonts,
+        cursor="trek")                                  # sailboat if blue bg
+        self.select_btn.pack(pady=15, padx=5, fill="x")
 
         # naviazanie hover efektu
-        btn.bind("<Enter>", self.on_enter)
-        btn.bind("<Leave>", self.on_leave)
+        self.select_btn.bind("<Enter>", self.on_enter)
+        self.select_btn.bind("<Leave>", self.on_leave)
 
         # Frame - Rámček na náhľady obrázkov
         self.preview_frame = tk.Frame(self, bg=color_background)

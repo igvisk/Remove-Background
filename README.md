@@ -26,15 +26,22 @@ https://github.com/igvisk/Remove-Background/releases
 ## ✨ Features
 - Background removal powered by **rembg** and **onnxruntime** (CPU/GPU with CUDA if available).
 - GUI built with **Tkinter**.
+- Dual language support (Slovak / English)
 - **Drag & Drop support** — simply drop an image file into the app window.
-- Image preview before and after processing.
+- Clickable output preview (opens file location)
+- Smooth UI animations (hover effects, fade transitions, ASCII button animation)
+- Live preview of original and processed images
+- Automatic EXIF orientation correction
+- Output images are automatically saved to the output/ folder
+
 - Offline support: the ONNX model (`u2net.onnx`) is cached locally and can be bundled with the app.
+- No data leaves your computer
 - Keyboard shortcuts:
   - **Ctrl+N** → Open image
   - **Ctrl+O** → Open output folder
   - **Ctrl+Q** → Quit app
-  - **F1** → About window
-- Hover effect on buttons for better user experience.
+  - **Ctrl+L** → Toggle language
+  - **F1**     → About window
 
 ---
 ## 🤖 AI Model
